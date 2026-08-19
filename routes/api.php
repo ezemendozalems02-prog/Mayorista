@@ -77,6 +77,13 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
 
     // ->only(...): el controller no implementa update() (una venta no se edita, se anula).
     Route::apiResource('sales', SaleController::class)->only(['index', 'store', 'show', 'destroy']);
+
+    // ── Caja (Fase 14) ───────────────────────────────────────────────────────
+    // 'current' antes del apiResource: si no, {cashSession} intentaria resolver "current" como id.
+    Route::get('cash-sessions/current', [\App\Http\Controllers\Api\CashSessionController::class, 'current'])->name('cash-sessions.current');
+    Route::apiResource('cash-sessions', \App\Http\Controllers\Api\CashSessionController::class)->only(['index', 'store', 'show']);
+    Route::post('cash-sessions/{cashSession}/movements', [\App\Http\Controllers\Api\CashSessionController::class, 'storeMovement'])->name('cash-sessions.movements.store');
+    Route::post('cash-sessions/{cashSession}/close', [\App\Http\Controllers\Api\CashSessionController::class, 'close'])->name('cash-sessions.close');
     Route::apiResource('repairs', RepairController::class);
     Route::apiResource('technicians', TechnicianController::class);
     Route::apiResource('spare-parts', SparePartController::class);

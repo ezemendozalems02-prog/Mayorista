@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\CashMovementType;
 use App\Exceptions\InsufficientStockException;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Services\CashService;
 use App\Services\SaleService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -13,8 +15,10 @@ use Illuminate\Validation\Rule;
 
 class SaleController extends Controller
 {
-    public function __construct(private SaleService $saleService)
-    {
+    public function __construct(
+        private SaleService $saleService,
+        private CashService $cashService,
+    ) {
     }
 
     public function index(Request $request)
@@ -131,6 +135,19 @@ class SaleController extends Controller
                     'amount' => $sale->total,
                     'paid_at' => now(),
                 ]);
+
+                // Si cobraron en efectivo y hay una caja abierta, refleja el
+                // ingreso ahi (Fase 14). Opcional: no bloquea la venta.
+                if ($validated['payment_method'] === 'cash') {
+                    $this->cashService->registerCashInflowIfOpen(
+                        organizationId: $orgId,
+                        amount: (float) $sale->total,
+                        type: CashMovementType::SALE,
+                        referenceType: 'sale',
+                        referenceId: $sale->id,
+                        notes: "Venta {$sale->sale_number}",
+                    );
+                }
             }
 
             // Notifications

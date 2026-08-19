@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AccountMovementType;
+use App\Enums\CashMovementType;
 use App\Enums\PaymentMethod;
 use App\Exceptions\CreditLimitExceededException;
 use App\Models\AccountMovement;
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\DB;
  */
 class AccountService
 {
+    public function __construct(private CashService $cashService)
+    {
+    }
+
     /**
      * Registra un movimiento con signo: positivo = aumenta la deuda,
      * negativo = la reduce. Si el resultado supera credit_limit (cuando el
@@ -94,7 +99,7 @@ class AccountService
                 userId: $userId,
             );
 
-            Payment::create([
+            $payment = Payment::create([
                 'organization_id' => $client->organization_id,
                 'client_id' => $client->id,
                 'type' => 'income',
@@ -104,6 +109,21 @@ class AccountService
                 'notes' => $notes ?? 'Pago de cuenta corriente',
                 'paid_at' => now(),
             ]);
+
+            // Si cobraron en efectivo y hay una caja abierta, refleja el
+            // ingreso ahi (Fase 14). Si no hay caja abierta, no pasa nada:
+            // la caja es opcional y nunca bloquea un cobro.
+            if ($method === PaymentMethod::CASH) {
+                $this->cashService->registerCashInflowIfOpen(
+                    organizationId: $client->organization_id,
+                    amount: $amount,
+                    type: CashMovementType::ACCOUNT_PAYMENT,
+                    referenceType: 'payment',
+                    referenceId: $payment->id,
+                    notes: "Cobro cta. cte. {$client->display_name}",
+                    userId: $userId,
+                );
+            }
 
             return $movement;
         });

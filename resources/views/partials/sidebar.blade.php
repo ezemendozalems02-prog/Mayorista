@@ -72,6 +72,7 @@
                     ['label' => 'Proveedores', 'icon' => 'truck', 'route' => 'supplier.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
                     ['label' => 'Reparaciones', 'icon' => 'wrench', 'route' => 'repair.index', 'feature' => 'repairs', 'roles' => ['owner', 'manager', 'technician']],
                     ['label' => 'Ventas', 'icon' => 'shopping-cart', 'route' => 'sale.index', 'feature' => 'sales', 'roles' => ['owner', 'manager', 'seller']],
+                    ['label' => 'Caja', 'icon' => 'landmark', 'route' => 'cash-session.index', 'feature' => 'sales', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Clientes', 'icon' => 'users', 'route' => 'client.index', 'feature' => 'clients', 'roles' => ['owner', 'manager', 'seller', 'technician']],
                     ['label' => 'Canjes', 'icon' => 'refresh-cw', 'route' => 'trade-in.index', 'feature' => 'trade_ins', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Staff', 'icon' => 'user-check', 'route' => 'technician.index', 'feature' => 'technicians', 'roles' => ['owner', 'manager']],

@@ -192,6 +192,16 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
         Route::post('/{purchase}/cancelar', [PurchaseController::class, 'cancel'])->name('purchase.cancel');
     })->middleware(['feature:catalog', 'role:owner,manager']);
 
+    // ── Caja (Fase 14) ────────────────────────────────────────────────────────
+    Route::prefix('caja')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Web\CashSessionController::class, 'index'])->name('cash-session.index');
+        Route::post('/abrir', [\App\Http\Controllers\Web\CashSessionController::class, 'store'])->name('cash-session.store');
+        Route::post('/movimientos', [\App\Http\Controllers\Web\CashSessionController::class, 'storeMovement'])->name('cash-session.movements.store');
+        Route::post('/cerrar', [\App\Http\Controllers\Web\CashSessionController::class, 'close'])->name('cash-session.close');
+        Route::get('/historial', [\App\Http\Controllers\Web\CashSessionController::class, 'history'])->name('cash-session.history');
+        Route::get('/{cashSession}', [\App\Http\Controllers\Web\CashSessionController::class, 'show'])->name('cash-session.show');
+    })->middleware(['feature:sales', 'role:owner,manager,seller']);
+
     Route::get('/suscripcion', [\App\Http\Controllers\Web\SubscriptionController::class, 'index'])->name('subscription.index')->middleware('role:owner,manager');
     Route::get('/suscripcion/checkout', [\App\Http\Controllers\Web\SubscriptionController::class, 'checkout'])->name('subscription.checkout')->middleware('role:owner,manager');
     Route::post('/suscripcion/process', [\App\Http\Controllers\Web\SubscriptionController::class, 'process'])->name('subscription.process')->middleware('role:owner,manager');
