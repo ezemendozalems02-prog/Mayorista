@@ -22,6 +22,7 @@ class ClientResource extends JsonResource
             'address' => $this->address,
             'credit_limit' => $this->credit_limit,
             'discount_percentage' => $this->discount_percentage,
+            'current_balance' => $this->current_balance,
             'price_list_id' => $this->price_list_id,
             'price_list' => $this->whenLoaded('priceList', fn () => $this->priceList ? [
                 'id' => $this->priceList->id,

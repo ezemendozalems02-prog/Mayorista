@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
@@ -34,6 +35,11 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
     Route::apiResource('clients', ClientController::class);
+
+    // ── Cuenta corriente (Fase 13) ───────────────────────────────────────────
+    Route::get('clients/{client}/account-movements', [AccountController::class, 'movements'])->name('clients.account-movements');
+    Route::post('clients/{client}/account-payments', [AccountController::class, 'storePayment'])->name('clients.account-payments');
+
     Route::apiResource('inventory', InventoryController::class);
 
     // ── Catalogo (Fase 5) ────────────────────────────────────────────────────

@@ -37,6 +37,14 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
+                <a href="{{ route('client.account', $client) }}"
+                    class="px-6 py-3 bg-white dark:bg-dark-alt border border-gray-100 dark:border-white/5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-all shadow-sm flex items-center gap-2">
+                    <i data-lucide="wallet" class="w-4 h-4 text-primary"></i> Cuenta Corriente
+                    @php $balance = $client->current_balance; @endphp
+                    @if($balance != 0)
+                        <span class="{{ $balance > 0 ? 'text-red-500' : 'text-emerald-600' }}">${{ number_format(abs($balance), 2) }}</span>
+                    @endif
+                </a>
                 <a href="{{ route('client.edit', $client) }}"
                     class="px-6 py-3 bg-white dark:bg-dark-alt border border-gray-100 dark:border-white/5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-all shadow-sm flex items-center gap-2">
                     <i data-lucide="edit-3" class="w-4 h-4 text-primary"></i> Editar Perfil

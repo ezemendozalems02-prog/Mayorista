@@ -18,6 +18,7 @@ class ClientController extends Controller
         $clients = Client::where('organization_id', $orgId)
             ->withCount('sales')
             ->withSum('sales', 'total')
+            ->withSum('accountMovements', 'amount')
             ->when($request->search, function ($query, $search) {
                 // ilike (no like): Postgres es case-sensitive por defecto, a diferencia de MySQL.
                 $query->where(function ($q) use ($search) {

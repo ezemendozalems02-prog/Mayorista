@@ -74,4 +74,19 @@ class Client extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function accountMovements(): HasMany
+    {
+        return $this->hasMany(AccountMovement::class);
+    }
+
+    /**
+     * Saldo de cuenta corriente en vivo (no cacheado: el volumen esperado
+     * de movimientos por cliente es bajo). Positivo = el cliente debe,
+     * negativo = tiene a favor.
+     */
+    public function getCurrentBalanceAttribute(): float
+    {
+        return (float) $this->accountMovements()->sum('amount');
+    }
 }

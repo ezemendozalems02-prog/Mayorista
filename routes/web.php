@@ -112,6 +112,10 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
     ])->middleware(['feature:clients', 'role:owner,manager,seller,technician']);
     Route::post('/clientes/quick-store', [ClientController::class, 'quickStore'])->name('client.quick-store')->middleware('feature:clients');
 
+    // ── Cuenta corriente (Fase 13) ───────────────────────────────────────────
+    Route::get('/clientes/{client}/cuenta-corriente', [\App\Http\Controllers\Web\AccountController::class, 'show'])->name('client.account')->middleware('feature:clients');
+    Route::post('/clientes/{client}/cuenta-corriente/pagos', [\App\Http\Controllers\Web\AccountController::class, 'storePayment'])->name('client.account.pay')->middleware('feature:clients');
+
     // ── Catálogo (Fase 5) ────────────────────────────────────────────────────
     Route::resource('productos', ProductController::class)->except('show')->parameters(['productos' => 'product'])->names([
         'index' => 'product.index',

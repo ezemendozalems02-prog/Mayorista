@@ -113,22 +113,25 @@ class SaleController extends Controller
 
         try {
             $sale = $this->saleService->createSale($validated, $validated['items'], $request->user());
-        } catch (InsufficientStockException $e) {
+        } catch (InsufficientStockException|\App\Exceptions\CreditLimitExceededException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
 
         return \Illuminate\Support\Facades\DB::transaction(function () use ($validated, $orgId, $sale) {
-            // Record Payment
-            \App\Models\Payment::create([
-                'organization_id' => $orgId,
-                'sale_id' => $sale->id,
-                'client_id' => $sale->client_id,
-                'type' => 'income',
-                'method' => $validated['payment_method'],
-                'currency' => $sale->currency,
-                'amount' => $sale->total,
-                'paid_at' => now(),
-            ]);
+            // Venta a cuenta corriente: SaleService ya cargo el total al cliente
+            // (Fase 13); no llego dinero ahora, asi que no se registra Payment.
+            if ($validated['payment_method'] !== 'account') {
+                \App\Models\Payment::create([
+                    'organization_id' => $orgId,
+                    'sale_id' => $sale->id,
+                    'client_id' => $sale->client_id,
+                    'type' => 'income',
+                    'method' => $validated['payment_method'],
+                    'currency' => $sale->currency,
+                    'amount' => $sale->total,
+                    'paid_at' => now(),
+                ]);
+            }
 
             // Notifications
             try {

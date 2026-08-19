@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Enums\AccountMovementType;
 use App\Enums\StockMovementType;
+use App\Exceptions\CreditLimitExceededException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\Client;
 use App\Models\Product;
@@ -22,14 +24,19 @@ class SaleService
     public function __construct(
         private StockService $stockService,
         private PriceResolverService $priceResolver,
+        private AccountService $accountService,
     ) {
     }
 
     /**
      * $items: [['product_id' => int, 'quantity' => int, 'unit_price' => ?float], ...]
      * Si unit_price no viene, se resuelve con PriceResolverService segun el cliente.
+     * $attributes['payment_method'] === 'account': carga el total a la cuenta
+     * corriente del cliente (Fase 13) en la misma transaccion -- si supera su
+     * limite de credito, se rechaza la venta entera (nada se crea).
      *
      * @throws InsufficientStockException
+     * @throws CreditLimitExceededException
      */
     public function createSale(array $attributes, array $items, User $seller): Sale
     {
@@ -37,8 +44,14 @@ class SaleService
             throw new \InvalidArgumentException('La venta necesita al menos un producto.');
         }
 
-        return DB::transaction(function () use ($attributes, $items, $seller) {
+        $onAccount = ($attributes['payment_method'] ?? null) === 'account';
+
+        return DB::transaction(function () use ($attributes, $items, $seller, $onAccount) {
             $client = ! empty($attributes['client_id']) ? Client::find($attributes['client_id']) : null;
+
+            if ($onAccount && ! $client) {
+                throw new \InvalidArgumentException('Una venta a cuenta corriente necesita un cliente.');
+            }
 
             $lines = $this->resolveLines($items, $client);
 
@@ -90,14 +103,28 @@ class SaleService
                 );
             }
 
+            if ($onAccount) {
+                $this->accountService->recordMovement(
+                    client: $client,
+                    amount: (float) $sale->total,
+                    type: AccountMovementType::SALE,
+                    notes: "Venta {$sale->sale_number}",
+                    referenceType: 'sale',
+                    referenceId: $sale->id,
+                );
+            }
+
             return $sale;
         });
     }
 
     /**
-     * Anula una venta: revierte el stock de cada linea (RETURN, con nota) y
-     * borra la venta y sus pagos. Los items de InventoryItem (flujo viejo,
-     * desactivado) se siguen restaurando por compatibilidad.
+     * Anula una venta: revierte el stock de cada linea (RETURN, con nota),
+     * revierte el cargo a cuenta corriente si la venta fue a cuenta (Fase 13,
+     * via nota de credito -- no se puede simplemente borrar el movimiento
+     * porque el ledger es append-only), y borra la venta y sus pagos. Los
+     * items de InventoryItem (flujo viejo, desactivado) se siguen
+     * restaurando por compatibilidad.
      */
     public function voidSale(Sale $sale): void
     {
@@ -117,6 +144,22 @@ class SaleService
                 if ($item->inventoryItem) {
                     $item->inventoryItem->update(['status' => \App\Enums\InventoryStatus::IN_STOCK]);
                 }
+            }
+
+            $wasOnAccount = \App\Models\AccountMovement::where('reference_type', 'sale')
+                ->where('reference_id', $sale->id)
+                ->where('type', AccountMovementType::SALE)
+                ->exists();
+
+            if ($wasOnAccount && $sale->client) {
+                $this->accountService->recordMovement(
+                    client: $sale->client,
+                    amount: -(float) $sale->total,
+                    type: AccountMovementType::CREDIT_NOTE,
+                    notes: "Venta {$sale->sale_number} anulada",
+                    referenceType: 'sale',
+                    referenceId: $sale->id,
+                );
             }
 
             $sale->payments()->delete();

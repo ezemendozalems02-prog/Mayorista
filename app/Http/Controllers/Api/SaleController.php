@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\CreditLimitExceededException;
 use App\Exceptions\InsufficientStockException;
 use App\Http\Controllers\Controller;
 use App\Models\Sale;
@@ -36,12 +37,13 @@ class SaleController extends Controller
             'currency' => 'nullable|string|size:3',
             'exchange_rate' => 'nullable|numeric',
             'discount' => 'nullable|numeric|min:0',
+            'payment_method' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 
         try {
             $sale = $this->saleService->createSale($validated, $validated['items'], $request->user());
-        } catch (InsufficientStockException $e) {
+        } catch (InsufficientStockException|CreditLimitExceededException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
 

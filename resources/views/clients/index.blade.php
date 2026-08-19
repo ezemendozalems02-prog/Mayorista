@@ -74,6 +74,7 @@
                             <th class="px-8 py-5 text-left hidden md:table-cell">Documento</th>
                             <th class="px-8 py-5 text-left hidden sm:table-cell">Compras</th>
                             <th class="px-8 py-5 text-left hidden sm:table-cell">Total Invertido</th>
+                            <th class="px-8 py-5 text-left hidden lg:table-cell">Saldo</th>
                             <th class="px-8 py-5 text-right">Acciones</th>
                         </tr>
                     </thead>
@@ -117,7 +118,17 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-6 text-sm font-black text-gray-700 dark:text-gray-200 italic hidden sm:table-cell">
-                                    USD {{ number_format($client->sales_sum_total ?? 0, 2) }}
+                                    ${{ number_format($client->sales_sum_total ?? 0, 2) }}
+                                </td>
+                                <td class="px-8 py-6 hidden lg:table-cell">
+                                    @php $balance = $client->account_movements_sum_amount ?? 0; @endphp
+                                    @if($balance != 0)
+                                        <a href="{{ route('client.account', $client) }}" class="text-sm font-black italic {{ $balance > 0 ? 'text-red-500' : 'text-emerald-600' }} hover:underline">
+                                            ${{ number_format(abs($balance), 2) }}
+                                        </a>
+                                    @else
+                                        <span class="text-xs text-gray-300 italic">Al día</span>
+                                    @endif
                                 </td>
                                 <td class="px-8 py-6 text-right">
                                     <div class="flex items-center justify-end gap-2">
@@ -135,7 +146,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-20 text-center animate-pulse">
+                                <td colspan="7" class="py-20 text-center animate-pulse">
                                     <div class="flex flex-col items-center justify-center text-gray-400">
                                         <i data-lucide="user-plus" class="w-16 h-16 mb-4 opacity-20"></i>
                                         <p class="text-lg font-black tracking-tight italic">No encontramos clientes</p>
