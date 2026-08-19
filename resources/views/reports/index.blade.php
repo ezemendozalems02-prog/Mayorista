@@ -49,14 +49,14 @@
             <div class="absolute -right-3 -bottom-3 w-16 h-16 bg-white/10 rounded-full"></div>
         </div>
         <div class="bg-white dark:bg-dark-alt p-5 rounded-3xl border border-gray-100 dark:border-white/5 shadow-lg relative overflow-hidden">
-            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">🔧 Reparaciones Hoy</p>
-            <p id="rt-today-repairs" class="text-2xl font-black italic tracking-tighter dark:text-gray-100">—</p>
-            <p class="text-[10px] text-gray-400 mt-1">nuevas órdenes</p>
+            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">🚚 Compras Hoy</p>
+            <p id="rt-today-purchases" class="text-2xl font-black italic tracking-tighter dark:text-gray-100">—</p>
+            <p class="text-[10px] text-gray-400 mt-1">recibidas</p>
         </div>
         <div class="bg-white dark:bg-dark-alt p-5 rounded-3xl border border-gray-100 dark:border-white/5 shadow-lg relative overflow-hidden">
-            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">⏳ Pendientes</p>
-            <p id="rt-pending" class="text-2xl font-black italic tracking-tighter dark:text-gray-100">—</p>
-            <p class="text-[10px] text-gray-400 mt-1">reparaciones</p>
+            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">💵 Caja</p>
+            <p id="rt-cash-status" class="text-2xl font-black italic tracking-tighter dark:text-gray-100">—</p>
+            <p class="text-[10px] text-gray-400 mt-1">estado del turno</p>
         </div>
         <div class="bg-white dark:bg-dark-alt p-5 rounded-3xl border border-gray-100 dark:border-white/5 shadow-lg relative overflow-hidden">
             <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1">🛒 Última Venta</p>
@@ -114,16 +114,16 @@
             <i data-lucide="receipt" class="absolute -right-3 -bottom-3 w-20 h-20 text-amber-500/5 group-hover:scale-110 transition-transform duration-300"></i>
         </div>
 
-        {{-- Ingresos por Reparaciones --}}
+        {{-- Compras a Proveedores --}}
         <div class="bg-white dark:bg-dark-alt p-6 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-xl shadow-violet-500/5 relative overflow-hidden group">
             <div class="relative z-10">
-                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic mb-1">Ing. Reparaciones</p>
+                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic mb-1">Compras a Proveedores</p>
                 <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">
-                    USD {{ number_format($repairRevenue, 2) }}
+                    USD {{ number_format($purchasesTotal, 2) }}
                 </h3>
-                <p class="text-[9px] font-bold text-gray-400 uppercase mt-3">{{ $repairCount }} órdenes</p>
+                <p class="text-[9px] font-bold text-gray-400 uppercase mt-3">{{ $purchasesCount }} recibidas</p>
             </div>
-            <i data-lucide="wrench" class="absolute -right-3 -bottom-3 w-20 h-20 text-blue-500/5 group-hover:-rotate-12 transition-transform duration-300"></i>
+            <i data-lucide="truck" class="absolute -right-3 -bottom-3 w-20 h-20 text-blue-500/5 group-hover:-rotate-12 transition-transform duration-300"></i>
         </div>
 
         {{-- Clientes Nuevos --}}
@@ -377,43 +377,39 @@
     </div>
 
     {{-- ══════════════════════════════════════════════
-         REPARACIONES POR TÉCNICO + ESTADOS
+         COMPRAS POR PROVEEDOR + CUENTAS POR COBRAR
     ══════════════════════════════════════════════ --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- Reparaciones por Técnico --}}
+        {{-- Compras por Proveedor --}}
         <div class="bg-white dark:bg-dark-alt p-7 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-xl shadow-violet-500/5">
             <h3 class="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest italic flex items-center gap-2 mb-6">
-                <i data-lucide="wrench" class="w-5 h-5 text-blue-500"></i> Reparaciones por Técnico
+                <i data-lucide="truck" class="w-5 h-5 text-blue-500"></i> Compras por Proveedor
             </h3>
-            @if($repairsByTechnician->isEmpty())
+            @if($purchasesBySupplier->isEmpty())
                 <div class="flex flex-col items-center justify-center py-10 text-gray-300 dark:text-gray-600">
-                    <i data-lucide="user-x" class="w-10 h-10 mb-2"></i>
-                    <p class="text-xs font-bold">Sin datos en este período</p>
+                    <i data-lucide="package-x" class="w-10 h-10 mb-2"></i>
+                    <p class="text-xs font-bold">Sin compras recibidas en este período</p>
                 </div>
             @else
-                <div class="space-y-3">
-                    @foreach($repairsByTechnician as $tech)
-                    @php
-                        $completedPct = $tech->count > 0 ? round(($tech->completed / $tech->count) * 100) : 0;
-                    @endphp
+                @php $maxSupplier = $purchasesBySupplier->max('total') ?: 1; @endphp
+                <div class="space-y-4">
+                    @foreach($purchasesBySupplier as $supplier)
+                    @php $pct = ($supplier->total / $maxSupplier) * 100; @endphp
                     <div class="p-4 rounded-2xl bg-gray-50 dark:bg-dark">
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
-                                    <i data-lucide="user" class="w-4 h-4 text-blue-500"></i>
+                                    <i data-lucide="truck" class="w-4 h-4 text-blue-500"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-black dark:text-gray-200">{{ $tech->tech_name }}</p>
-                                    <p class="text-[9px] text-gray-400">{{ $tech->count }} reparaciones</p>
+                                    <p class="text-xs font-black dark:text-gray-200">{{ $supplier->supplier_name }}</p>
+                                    <p class="text-[9px] text-gray-400">{{ $supplier->count }} compras</p>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <p class="text-xs font-black dark:text-gray-100">USD {{ number_format($tech->revenue, 0) }}</p>
-                                <p class="text-[9px] text-emerald-500">{{ $completedPct }}% completadas</p>
-                            </div>
+                            <p class="text-xs font-black dark:text-gray-100">USD {{ number_format($supplier->total, 0) }}</p>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-dark-alt h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-blue-400 h-full rounded-full transition-all duration-700" style="width: {{ $completedPct }}%"></div>
+                            <div class="bg-blue-400 h-full rounded-full transition-all duration-700" style="width: {{ $pct }}%"></div>
                         </div>
                     </div>
                     @endforeach
@@ -421,47 +417,27 @@
             @endif
         </div>
 
-        {{-- Estado de Reparaciones (donut) + Top Clientes --}}
-        <div class="space-y-6">
-            {{-- Estado Reparaciones --}}
-            <div class="bg-white dark:bg-dark-alt p-7 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-xl shadow-violet-500/5">
-                <h3 class="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest italic flex items-center gap-2 mb-5">
-                    <i data-lucide="pie-chart" class="w-5 h-5 text-violet-500"></i> Estado de Reparaciones
-                </h3>
-                <div class="flex items-center gap-6">
-                    <div class="w-32 h-32 shrink-0">
-                        <canvas id="repairStatusChart"></canvas>
-                    </div>
-                    <div class="space-y-2 flex-1">
-                        @php
-                            $statusColors = [
-                                'pending'       => ['bg-amber-400','Pendiente'],
-                                'diagnosis'     => ['bg-indigo-400','En Diagnóstico'],
-                                'quoted'        => ['bg-blue-400','Cotizado'],
-                                'approved'      => ['bg-emerald-400','Aprobado'],
-                                'in_progress'   => ['bg-cyan-400','En Proceso'],
-                                'ready'         => ['bg-emerald-500','Listo para Entregar'],
-                                'delivered'     => ['bg-violet-400','Entregado'],
-                                'cancelled'     => ['bg-red-400','Cancelado'],
-                            ];
-                            $totalRepairs = $repairStatuses->sum('count') ?: 1;
-                        @endphp
-                        @foreach($repairStatuses as $rs)
-                        @php
-                            $info = $statusColors[$rs->status->value ?? $rs->status] ?? ['bg-gray-400', $rs->status];
-                            $pct = round(($rs->count / $totalRepairs) * 100);
-                        @endphp
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full {{ $info[0] }}"></span>
-                                <span class="text-[10px] font-black dark:text-gray-300">{{ $info[1] }}</span>
-                            </div>
-                            <span class="text-[10px] font-black dark:text-gray-100">{{ $rs->count }} <span class="text-gray-400 font-normal">({{ $pct }}%)</span></span>
-                        </div>
-                        @endforeach
-                    </div>
+        {{-- Cuentas por Cobrar --}}
+        <div class="bg-white dark:bg-dark-alt p-7 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-xl shadow-violet-500/5">
+            <h3 class="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest italic flex items-center gap-2 mb-2">
+                <i data-lucide="wallet" class="w-5 h-5 text-red-500"></i> Cuentas por Cobrar
+            </h3>
+            <p class="text-2xl font-black italic tracking-tighter text-red-500 mb-5">USD {{ number_format($totalReceivable, 2) }}</p>
+            @if($topDebtors->isEmpty())
+                <div class="flex flex-col items-center justify-center py-10 text-gray-300 dark:text-gray-600">
+                    <i data-lucide="check-circle" class="w-10 h-10 mb-2"></i>
+                    <p class="text-xs font-bold">Ningún cliente tiene saldo deudor</p>
                 </div>
-            </div>
+            @else
+                <div class="space-y-3">
+                    @foreach($topDebtors as $debtor)
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-gray-50 dark:bg-dark">
+                        <span class="text-xs font-black dark:text-gray-200 truncate max-w-[160px]">{{ $debtor->client_name }}</span>
+                        <span class="text-xs font-black text-red-500">USD {{ number_format($debtor->balance, 2) }}</span>
+                    </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 
@@ -613,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const hourlyData = @json($todayBilling);
     const hours = Array.from({length: 24}, (_, i) => `${String(i).padStart(2,'0')}h`);
     const hourlyTotals = hours.map((_, i) => {
-        const found = hourlyData.find(h => h.hour === i);
+        const found = hourlyData.find(h => Number(h.hour) === i);
         return found ? parseFloat(found.total) : 0;
     });
     const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
@@ -670,39 +646,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ── 4. Estado Reparaciones (Donut) ────────────────────────────
-    const rsCanvas = document.getElementById('repairStatusChart');
-    if (rsCanvas) {
-        const rsData = @json($repairStatuses);
-        if (rsData.length > 0) {
-            const statusColor = {
-                pending: '#fbbf24', diagnosis: '#818cf8', quoted: '#60a5fa',
-                approved: '#10b981', in_progress: '#22d3ee', ready: '#059669',
-                delivered: '#a78bfa', cancelled: '#f87171'
-            };
-            new Chart(rsCanvas.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: rsData.map(s => s.status),
-                    datasets: [{
-                        data: rsData.map(s => s.count),
-                        backgroundColor: rsData.map(s => statusColor[s.status] ?? '#9ca3af'),
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    cutout: '72%',
-                    plugins: { legend: { display: false }, tooltip: {
-                        backgroundColor: '#1f2937',
-                        callbacks: { label: ctx => ' ' + ctx.parsed + ' reparaciones' }
-                    }}
-                }
-            });
-        }
-    }
-
     // ── 5. Reloj Live ─────────────────────────────────────────────
     function updateClock() {
         const el = document.getElementById('live-clock');
@@ -721,10 +664,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const d = await res.json();
 
             const el = id => document.getElementById(id);
-            if (el('rt-today-total'))   el('rt-today-total').textContent   = 'USD ' + parseFloat(d.today_total).toLocaleString('es-AR', {minimumFractionDigits:2});
-            if (el('rt-today-count'))   el('rt-today-count').textContent   = d.today_count + ' órdenes';
-            if (el('rt-today-repairs')) el('rt-today-repairs').textContent = d.today_repairs;
-            if (el('rt-pending'))       el('rt-pending').textContent       = d.pending_repairs;
+            if (el('rt-today-total'))     el('rt-today-total').textContent     = 'USD ' + parseFloat(d.today_total).toLocaleString('es-AR', {minimumFractionDigits:2});
+            if (el('rt-today-count'))     el('rt-today-count').textContent     = d.today_count + ' órdenes';
+            if (el('rt-today-purchases')) el('rt-today-purchases').textContent = d.today_purchases;
+            if (el('rt-cash-status')) {
+                el('rt-cash-status').textContent = d.cash_session_open
+                    ? 'USD ' + parseFloat(d.cash_balance).toLocaleString('es-AR', {minimumFractionDigits:2})
+                    : 'Cerrada';
+            }
             if (el('rt-last-sale') && d.last_sale) {
                 el('rt-last-sale').textContent = 'USD ' + parseFloat(d.last_sale.total).toLocaleString('es-AR', {minimumFractionDigits:2});
                 el('rt-last-time').textContent = d.last_sale.client_name;
