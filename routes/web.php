@@ -33,6 +33,25 @@ Route::get('/', function () {
 // Demo Mode
 Route::get('/demo', [\App\Http\Controllers\DemoController::class, 'start'])->name('demo.start');
 
+// TEMPORAL - diagnóstico de despliegue en Vercel. Borrar cuando el deploy funcione.
+Route::get('/debug-env', function () {
+    return response()->json([
+        'APP_TIMEZONE_env' => env('APP_TIMEZONE'),
+        'APP_TIMEZONE_getenv' => getenv('APP_TIMEZONE'),
+        'APP_TIMEZONE_SERVER' => $_SERVER['APP_TIMEZONE'] ?? null,
+        'config_app_timezone' => config('app.timezone'),
+        'APP_ENV' => env('APP_ENV'),
+        'APP_DEBUG' => env('APP_DEBUG'),
+        'APP_KEY_set' => env('APP_KEY') ? true : false,
+        'DB_CONNECTION' => env('DB_CONNECTION'),
+        'DB_HOST_set' => env('DB_HOST') ? true : false,
+        'DB_USERNAME_set' => env('DB_USERNAME') ? true : false,
+        'DB_PASSWORD_set' => env('DB_PASSWORD') ? true : false,
+        'PLATFORM_MODE' => env('PLATFORM_MODE'),
+        'php_version' => PHP_VERSION,
+    ]);
+});
+
 
 // Autenticación
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -63,23 +82,10 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Módulos
-    Route::middleware('role:owner,manager,technician,seller')->prefix('inventario')->group(function () {
-        Route::get('/importar', [\App\Http\Controllers\Web\StockImportController::class, 'index'])->name('inventory.import.index')->middleware('role:owner,manager');
-        Route::get('/importar/plantilla', [\App\Http\Controllers\Web\StockImportController::class, 'template'])->name('inventory.import.template')->middleware('role:owner,manager');
-        Route::post('/importar/upload', [\App\Http\Controllers\Web\StockImportController::class, 'upload'])->name('inventory.import.upload')->middleware('role:owner,manager');
-        Route::post('/importar/preview', [\App\Http\Controllers\Web\StockImportController::class, 'preview'])->name('inventory.import.preview')->middleware('role:owner,manager');
-        Route::post('/importar/store', [\App\Http\Controllers\Web\StockImportController::class, 'store'])->name('inventory.import.store')->middleware('role:owner,manager');
-    });
-
-    Route::resource('inventario', InventoryController::class)->parameters(['inventario' => 'inventory'])->names([
-        'index' => 'inventory.index',
-        'create' => 'inventory.create',
-        'store' => 'inventory.store',
-        'show' => 'inventory.show',
-        'edit' => 'inventory.edit',
-        'update' => 'inventory.update',
-        'destroy' => 'inventory.destroy',
-    ])->middleware('role:owner,manager,technician,seller');
+    // Redirección de /inventario a /productos para evitar pantalla obsoleta de celulares
+    Route::get('/inventario', function () {
+        return redirect()->route('product.index');
+    })->middleware('auth');
 
     Route::resource('reparaciones', RepairController::class)->parameters(['reparaciones' => 'repair'])->names([
         'index' => 'repair.index',
