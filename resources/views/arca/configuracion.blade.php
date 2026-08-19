@@ -287,13 +287,13 @@
                             <div class="flex gap-2">
                                 <input type="text" x-model="alias"
                                     class="flex-1 px-4 py-3 rounded-2xl bg-gray-50 dark:bg-dark border border-transparent focus:border-violet-500/50 outline-none font-mono text-sm"
-                                    placeholder="ej: vortex_prod">
+                                    placeholder="ej: mito_prod">
                                 <button type="button" @click="alias = suggestAlias()"
                                     class="px-4 py-3 rounded-2xl bg-gray-100 dark:bg-dark hover:bg-gray-200 dark:hover:bg-white/5 text-xs font-black uppercase tracking-widest text-gray-500 transition-colors whitespace-nowrap">
                                     <i data-lucide="sparkles" class="w-3.5 h-3.5 inline mr-1"></i>Sugerir
                                 </button>
                             </div>
-                            <p class="text-[10px] text-gray-400">Solo letras, números, guiones y guiones bajos. Ej: <code class="text-violet-400">vortex_{{ Auth::user()->organization_id }}</code></p>
+                            <p class="text-[10px] text-gray-400">Solo letras, números, guiones y guiones bajos. Ej: <code class="text-violet-400">mito_{{ Auth::user()->organization_id }}</code></p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 text-xs">
@@ -371,7 +371,7 @@
                         @foreach([
                             ['Ingresá al portal de AFIP con tu CUIT y clave fiscal.', null],
                             ['Andá a <strong>Administrador de Certificados Digitales</strong> (buscalo en el buscador de servicios).', null],
-                            ['Hacé click en <strong>Nueva DN</strong> y creá un nuevo alias usando el nombre: <code class="text-violet-400 font-mono">'. ($setting?->cuit ? 'vortex_' . preg_replace('/[^0-9]/', '', $setting->cuit) : 'vortex_TUCUIT') . '</code>', null],
+                            ['Hacé click en <strong>Nueva DN</strong> y creá un nuevo alias usando el nombre: <code class="text-violet-400 font-mono">'. ($setting?->cuit ? 'mito_' . preg_replace('/[^0-9]/', '', $setting->cuit) : 'mito_TUCUIT') . '</code>', null],
                             ['Subí el archivo <code class="text-violet-400 font-mono">.csr</code> que descargaste en el paso anterior.', null],
                             ['Una vez procesado, <strong>descargá el certificado</strong> (.crt) desde esa pantalla.', null],
                         ] as [$text, $_])
@@ -624,7 +624,7 @@
             error: '',
 
             // Step 1
-            alias: 'vortex_{{ Auth::user()->organization_id }}',
+            alias: 'mito_{{ Auth::user()->organization_id }}',
             cuit: @js($setting?->cuit ?? ''),
             razonSocial: @js($setting?->razon_social ?? ''),
             privateKey: '',
@@ -728,7 +728,7 @@
             },
 
             suggestAlias() {
-                const base = (this.razonSocial || 'vortex')
+                const base = (this.razonSocial || 'mito')
                     .toLowerCase()
                     .replace(/[^a-z0-9]/g, '_')
                     .replace(/_+/g, '_')

@@ -257,7 +257,7 @@ export default function ConfiguracionFiscalPage() {
                             <Input
                                 value={fiscal.razon_social}
                                 onChange={(e) => setFiscal({ ...fiscal, razon_social: e.target.value })}
-                                placeholder="Ej: Vortex Tech S.A."
+                                placeholder="Ej: Mito Yamile S.A."
                                 required
                                 className="dark:bg-[#1F1F23]"
                             />

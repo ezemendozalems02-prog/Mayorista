@@ -18,7 +18,7 @@
     </div>
 
     {{-- Commissions Table --}}
-    <div class="bg-white dark:bg-vortex-dark-alt rounded-[40px] border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/5 dark:shadow-none overflow-hidden">
+    <div class="bg-white dark:bg-dark-alt rounded-[40px] border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/5 dark:shadow-none overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>

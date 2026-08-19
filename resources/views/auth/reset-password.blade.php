@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Clave - Vortex Control Phone</title>
-    <link rel="icon" type="image/png" href="{{ asset('img/LogoVortexControlPhoneBlanco.png') }}">
+    <title>Nueva Clave - Mito Yamile</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('img/logo-mito-yamile-blanco.svg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -56,7 +56,7 @@
 
         <!-- Logo Area -->
         <div class="flex flex-col items-center mb-6 md:mb-8 text-center px-4">
-            <img src="{{ asset('img/LogoVortexControlPhoneBlanco.png') }}" alt="Vortex Control Phone"
+            <img src="{{ asset('img/logo-mito-yamile-blanco.svg') }}" alt="Mito Yamile"
                 class="h-24 md:h-36 w-auto object-contain mb-0 hover:scale-105 transition-transform duration-300">
         </div>
 
@@ -141,7 +141,7 @@
 
         <p
             class="mt-8 text-center text-[10px] font-black text-gray-600 uppercase tracking-widest leading-loose">
-            Vortex Control Phone SaaS &copy; {{ date('Y') }}
+            Mito Yamile &copy; {{ date('Y') }}
         </p>
 
     </div>

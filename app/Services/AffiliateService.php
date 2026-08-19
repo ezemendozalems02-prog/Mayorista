@@ -17,7 +17,7 @@ class AffiliateService
     public function registerReferral(Organization $organization)
     {
         // Try to get from cookie first, then from current request if cookie isn't set yet during the same process
-        $refCode = Cookie::get('vortex_ref') ?? request()->query('ref');
+        $refCode = Cookie::get('mito_ref') ?? request()->query('ref');
 
         if (!$refCode) {
             return;

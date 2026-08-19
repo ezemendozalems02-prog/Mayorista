@@ -27,7 +27,7 @@ export default function TopNav() {
 
   const getBreadcrumbs = () => {
     const parts = pathname.split('/').filter(Boolean)
-    const items: BreadcrumbItem[] = [{ label: "Vortex Control Phone", href: "/dashboard" }]
+    const items: BreadcrumbItem[] = [{ label: "Mito Yamile", href: "/dashboard" }]
 
     parts.forEach((part, index) => {
       const href = '/' + parts.slice(0, index + 1).join('/')

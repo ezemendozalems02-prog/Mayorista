@@ -58,7 +58,7 @@ class DemoController extends Controller
         $user = User::create([
             'organization_id' => $organization->id,
             'name' => "Demo User " . $demoId,
-            'email' => "demo_" . $demoId . "@vortexcontrol.test",
+            'email' => "demo_" . $demoId . "@mitoyamile.test",
             'password' => Hash::make(Str::random(16)),
             'role' => 'owner',
             'is_demo' => true,

@@ -173,7 +173,7 @@
 
         // Toast dispatcher
         window.toast = (message, type = 'success', title = '') => {
-            window.dispatchEvent(new CustomEvent('vortex-toast', { 
+            window.dispatchEvent(new CustomEvent('mito-toast', { 
                 detail: { message, type, title } 
             }));
         };
@@ -185,7 +185,7 @@
         @if(session('error'))
             setTimeout(() => window.toast('{{ session('error') }}', 'error', 'Error'), 500);
         @endif
-    " @vortex-toast.window="
+    " @mito-toast.window="
         $dispatch('add-toast', $event.detail)
     " @resize.window="if (window.innerWidth > 1024) sidebarOpen = true">
 
@@ -361,7 +361,7 @@
             initSearchableSelects();
         });
 
-        window.addEventListener('vortex:refresh-selects', (event) => {
+        window.addEventListener('mito:refresh-selects', (event) => {
             initSearchableSelects(event.detail?.root || document);
         });
     </script>

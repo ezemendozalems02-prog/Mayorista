@@ -12,7 +12,7 @@
                 @if($trialDaysLeft > 0)
                     Te quedan <span class="text-emerald-500">{{ $trialDaysLeft }} días</span> de prueba gratuita.
                 @else
-                    Tu prueba ha expirado. Suscribite para continuar usando Vortex Control Phone.
+                    Tu prueba ha expirado. Suscribite para continuar usando Mito Yamile.
                 @endif
             </p>
         </div>

@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-3xl font-black tracking-tight dark:text-gray-100 flex items-center gap-3 italic">
-                <i data-lucide="shield-check" class="w-8 h-8 text-red-500"></i> VortexControl Master
+                <i data-lucide="shield-check" class="w-8 h-8 text-red-500"></i> Mito Master
             </h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-tight">
                 Control global de la infraestructura, negocios y operaciones.

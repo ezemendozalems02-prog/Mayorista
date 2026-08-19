@@ -16,14 +16,14 @@
             </p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('super-admin.commissions.index') }}" class="px-6 py-3 bg-white dark:bg-vortex-dark-alt border border-gray-100 dark:border-white/5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2">
+            <a href="{{ route('super-admin.commissions.index') }}" class="px-6 py-3 bg-white dark:bg-dark-alt border border-gray-100 dark:border-white/5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2">
                 <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-500"></i> Ver Comisiones
             </a>
         </div>
     </div>
 
     {{-- Affiliates Table --}}
-    <div class="bg-white dark:bg-vortex-dark-alt rounded-[40px] border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/5 dark:shadow-none overflow-hidden">
+    <div class="bg-white dark:bg-dark-alt rounded-[40px] border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/5 dark:shadow-none overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
@@ -51,7 +51,7 @@
                             </div>
                         </td>
                         <td class="px-8 py-6 text-center">
-                            <code class="text-xs bg-gray-100 dark:bg-vortex-dark px-3 py-1 rounded-lg font-bold text-indigo-500">{{ $affiliate->affiliate_code }}</code>
+                            <code class="text-xs bg-gray-100 dark:bg-dark px-3 py-1 rounded-lg font-bold text-indigo-500">{{ $affiliate->affiliate_code }}</code>
                         </td>
                         <td class="px-8 py-6 text-center">
                             <span class="text-[9px] font-black uppercase tracking-widest text-gray-400">{{ $affiliate->type }}</span>

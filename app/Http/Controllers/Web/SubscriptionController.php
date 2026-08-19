@@ -123,7 +123,7 @@ class SubscriptionController extends Controller
         $payload = [
             'back_url' => $successUrl,
             'external_reference' => $externalReference,
-            'reason' => $plan->name . ' - Vortex Control Phone',
+            'reason' => $plan->name . ' - Mito Yamile',
             'auto_recurring' => [
                 'frequency' => 1,
                 'frequency_type' => 'months',

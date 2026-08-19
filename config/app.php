@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Vortex Control Phone'),
+    'name' => env('APP_NAME', 'Mito Yamile'),
 
     /*
     |--------------------------------------------------------------------------

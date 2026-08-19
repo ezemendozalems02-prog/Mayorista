@@ -181,7 +181,7 @@
                 <span class="flex items-center gap-1"><kbd class="bg-gray-100 dark:bg-dark p-1 rounded min-w-[18px] text-center shadow-sm">↓↑</kbd> Navegar</span>
             </div>
             <div class="flex items-center gap-1">
-                <i data-lucide="zap" class="w-3 h-3 text-primary"></i> Vortex Control Search
+                <i data-lucide="zap" class="w-3 h-3 text-primary"></i> Mito Search
             </div>
         </div>
     </div>

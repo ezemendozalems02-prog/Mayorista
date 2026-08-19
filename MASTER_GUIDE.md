@@ -1,4 +1,6 @@
-# 📱 VortexControlPhone - Guía de Planes y Accesos
+# 📱 Mito Yamile - Guía de Planes y Accesos (heredada, en revisión)
+
+> **Nota (Fase 3):** este documento describe el sistema de planes/SaaS heredado de Vortex Control Phone. Mito Yamile corre en modo `single_license` (instalación única, sin suscripciones ni límites por plan) — el contenido de abajo sobre precios y planes ya **no aplica** y queda pendiente de reemplazo por una guía de roles propia de Mito en una fase posterior. Se conserva por ahora solo como referencia histórica de cómo funcionaban los roles y permisos en el código heredado.
 
 Este documento resume la lógica de permisos, roles y costos configurada actualmente en el sistema. Es la fuente de verdad para entender qué puede hacer cada usuario según su plan y rol.
 

@@ -164,7 +164,7 @@
                                     </div>
                                     <p class="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-tight mb-2" x-text="item.data.message"></p>
                                     <div class="flex items-center justify-between mt-auto">
-                                        <span class="text-[8px] font-black uppercase tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md" x-text="item.data.seller_name || item.data.technician_name || 'Vortex Admin'"></span>
+                                        <span class="text-[8px] font-black uppercase tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md" x-text="item.data.seller_name || item.data.technician_name || 'Mito Admin'"></span>
                                         <a :href="item.data.url || '#'" class="text-[9px] font-black text-primary uppercase tracking-widest hover:underline italic">Detalles</a>
                                     </div>
                                 </div>

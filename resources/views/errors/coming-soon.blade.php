@@ -19,7 +19,7 @@
 
         <p
             class="max-w-md text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-xs leading-relaxed italic">
-            Estamos trabajando para integrar esta funcionalidad. El sistema SaaS Vortex Control Phone se actualiza
+            Estamos trabajando para integrar esta funcionalidad. El sistema de gestión de Mito Yamile se actualiza
             constantemente
             para ofrecerte la mejor experiencia.
         </p>

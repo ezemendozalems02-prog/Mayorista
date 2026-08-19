@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Nueva Suscripción - Vortex Control Phone</title>
+    <title>Nueva Suscripción - Mito Yamile</title>
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; color: #1e293b; margin: 0; padding: 0; background-color: #f1f5f9; }
         .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
@@ -24,7 +24,7 @@
     <div class="container">
         <div class="header">
             <span class="badge">🚀 Nueva Conversión SaaS!</span>
-            <h1>Vortex <span style="color: #6366f1;">Control Phone</span></h1>
+            <h1>Mito <span style="color: #6366f1;">Yamile</span></h1>
             <p style="margin: 15px 0 0; opacity: 0.7; font-weight: 500; font-size: 16px;">¡Acabamos de registrar un nuevo pago de suscripción!</p>
         </div>
         <div class="content">
@@ -47,12 +47,12 @@
 
             <div style="background: #fdf2f8; padding: 20px; border-radius: 20px; border: 1px solid #fce7f3; margin-bottom: 10px;">
                 <p style="margin: 0; font-size: 14px; color: #be185d; font-weight: 700;">
-                    🎉 ¡Felicidades Enzo! El negocio ya tiene activo su plan y los permisos han sido actualizados automáticamente en el sistema.
+                    🎉 ¡Felicidades! El negocio ya tiene activo su plan y los permisos han sido actualizados automáticamente en el sistema.
                 </p>
             </div>
         </div>
         <div class="footer">
-            Admin Dashboard Dashboard • Vortex Control Phone &copy; {{ date('Y') }}
+            Admin Dashboard • Mito Yamile &copy; {{ date('Y') }}
         </div>
     </div>
 </body>

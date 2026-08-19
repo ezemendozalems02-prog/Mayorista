@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Vortex Control Phone</title>
-        <link rel="icon" type="image/png" href="{{ asset('img/LogoVortexControlPhoneBlanco.png') }}">
+        <title>Mito Yamile</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('img/logo-mito-yamile.svg') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

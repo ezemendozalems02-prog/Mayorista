@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Nueva Venta - Vortex Control Phone</title>
+    <title>Nueva Venta - Mito Yamile</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f7f6; }
         .container { max-width: 600px; margin: 20px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
@@ -23,7 +23,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Vortex <span style="color: #cbd5e1;">Control Phone</span></h1>
+            <h1>Mito <span style="color: #cbd5e1;">Yamile</span></h1>
             <p style="margin: 8px 0 0; opacity: 0.8; font-weight: 600; font-size: 13px;">Notificación de Venta #{{ $sale->sale_number }}</p>
         </div>
         <div class="content">
@@ -87,7 +87,7 @@
             </p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Vortex Control Phone • Gestión Inteligente para Especialistas Apple.
+            &copy; {{ date('Y') }} Mito Yamile • Gestión Mayorista de Juguetería, Librería y Regalería.
         </div>
     </div>
 </body>

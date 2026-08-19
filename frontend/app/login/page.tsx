@@ -50,7 +50,7 @@ export default function LoginPage() {
             <Card className="w-full max-w-md border-gray-200 dark:border-[#1F1F23]">
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                        Vortex Control Phone
+                        Mito Yamile
                     </CardTitle>
                     <CardDescription>
                         Gestión profesional para locales de iPhone

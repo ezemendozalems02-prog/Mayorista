@@ -14,8 +14,8 @@ class AffiliateTestSeeder extends Seeder
     {
         // 1. Crear un Afiliado de prueba
         $affiliate = \App\Models\Affiliate::updateOrCreate(['email' => 'partner@test.com'], [
-            'name' => 'Enzo Master Partner',
-            'affiliate_code' => 'VORTEX2026',
+            'name' => 'Test Partner',
+            'affiliate_code' => 'TESTPARTNER2026',
             'type' => 'partner',
             'balance' => 250.00,
             'is_active' => true,

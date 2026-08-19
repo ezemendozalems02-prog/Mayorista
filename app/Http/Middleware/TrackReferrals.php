@@ -19,7 +19,7 @@ class TrackReferrals
             $refCode = $request->query('ref');
             
             // Queue the cookie for the next response
-            \Illuminate\Support\Facades\Cookie::queue('vortex_ref', $refCode, 60 * 24 * 30);
+            \Illuminate\Support\Facades\Cookie::queue('mito_ref', $refCode, 60 * 24 * 30);
         }
 
         return $next($request);

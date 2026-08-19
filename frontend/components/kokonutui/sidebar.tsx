@@ -78,7 +78,7 @@ export default function Sidebar() {
           >
             <div className="flex items-center gap-3">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Vortex Control Phone
+                Mito Yamile
               </span>
             </div>
           </Link>
