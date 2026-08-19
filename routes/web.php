@@ -50,6 +50,9 @@ Route::post('/reset-password', [\App\Http\Controllers\Web\PasswordResetControlle
 // Webhook de Mercado Pago - Público (Debe estar fuera de 'auth')
 Route::post('/suscripcion/webhook', [\App\Http\Controllers\Web\SubscriptionController::class, 'webhook'])->name('subscription.webhook');
 
+// ── Catálogo público (Fase 19) — sin login, para compartir con clientes ────
+Route::get('/catalogo', [\App\Http\Controllers\Web\CatalogController::class, 'index'])->name('catalog.public');
+
 
 // Dashboard & Privado
 Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(function () {
