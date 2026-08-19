@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\InventoryController;
 use App\Http\Controllers\Web\PhysicalCountController;
 use App\Http\Controllers\Web\PriceListController;
 use App\Http\Controllers\Web\ProductController;
+use App\Http\Controllers\Web\PurchaseController;
 use App\Http\Controllers\Web\RepairController;
 use App\Http\Controllers\Web\SaleController;
 use App\Http\Controllers\Web\ClientController;
@@ -175,6 +176,16 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
         Route::put('/{priceList}', [PriceListController::class, 'update'])->name('price-list.update');
         Route::delete('/{priceList}', [PriceListController::class, 'destroy'])->name('price-list.destroy');
         Route::post('/{priceList}/items', [PriceListController::class, 'setItem'])->name('price-list.items.set');
+    })->middleware(['feature:catalog', 'role:owner,manager']);
+
+    // ── Compras a proveedores (Fase 12) ──────────────────────────────────────
+    Route::prefix('compras')->group(function () {
+        Route::get('/', [PurchaseController::class, 'index'])->name('purchase.index');
+        Route::get('/crear', [PurchaseController::class, 'create'])->name('purchase.create');
+        Route::post('/', [PurchaseController::class, 'store'])->name('purchase.store');
+        Route::get('/{purchase}', [PurchaseController::class, 'show'])->name('purchase.show');
+        Route::post('/{purchase}/recibir', [PurchaseController::class, 'receive'])->name('purchase.receive');
+        Route::post('/{purchase}/cancelar', [PurchaseController::class, 'cancel'])->name('purchase.cancel');
     })->middleware(['feature:catalog', 'role:owner,manager']);
 
     Route::get('/suscripcion', [\App\Http\Controllers\Web\SubscriptionController::class, 'index'])->name('subscription.index')->middleware('role:owner,manager');

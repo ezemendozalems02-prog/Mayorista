@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PhysicalCountController;
 use App\Http\Controllers\Api\PriceListController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PurchaseController;
 use App\Http\Controllers\Api\RepairController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SparePartController;
@@ -62,6 +63,11 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
     // ── Listas de precios (Fase 10) ──────────────────────────────────────────
     Route::apiResource('price-lists', PriceListController::class);
     Route::put('price-lists/{priceList}/items', [PriceListController::class, 'syncItems'])->name('price-lists.items');
+
+    // ── Compras a proveedores (Fase 12) ──────────────────────────────────────
+    Route::apiResource('purchases', PurchaseController::class)->only(['index', 'store', 'show']);
+    Route::post('purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
+    Route::post('purchases/{purchase}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
 
     // ->only(...): el controller no implementa update() (una venta no se edita, se anula).
     Route::apiResource('sales', SaleController::class)->only(['index', 'store', 'show', 'destroy']);
