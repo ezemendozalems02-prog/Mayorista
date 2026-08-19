@@ -192,6 +192,17 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
         Route::post('/{purchase}/cancelar', [PurchaseController::class, 'cancel'])->name('purchase.cancel');
     })->middleware(['feature:catalog', 'role:owner,manager']);
 
+    // ── Pedidos (Fase 17) ────────────────────────────────────────────────────
+    Route::prefix('pedidos')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Web\OrderController::class, 'index'])->name('order.index');
+        Route::get('/crear', [\App\Http\Controllers\Web\OrderController::class, 'create'])->name('order.create');
+        Route::post('/', [\App\Http\Controllers\Web\OrderController::class, 'store'])->name('order.store');
+        Route::get('/{order}', [\App\Http\Controllers\Web\OrderController::class, 'show'])->name('order.show');
+        Route::post('/{order}/confirmar', [\App\Http\Controllers\Web\OrderController::class, 'confirm'])->name('order.confirm');
+        Route::post('/{order}/facturar', [\App\Http\Controllers\Web\OrderController::class, 'fulfill'])->name('order.fulfill');
+        Route::post('/{order}/cancelar', [\App\Http\Controllers\Web\OrderController::class, 'cancel'])->name('order.cancel');
+    })->middleware(['feature:sales', 'role:owner,manager,seller']);
+
     // ── Caja (Fase 14) ────────────────────────────────────────────────────────
     Route::prefix('caja')->group(function () {
         Route::get('/', [\App\Http\Controllers\Web\CashSessionController::class, 'index'])->name('cash-session.index');
