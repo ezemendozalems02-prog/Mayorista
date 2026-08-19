@@ -28,6 +28,13 @@ if (isset($_GET['__envcheck'])) {
         printf("%-16s %s\n", $secret, $value ? 'PRESENTE (' . strlen($value) . ' chars)' : 'AUSENTE o VACIO');
     }
 
+    echo "\n=== VARIABLES VACIAS (hay que corregirlas) ===\n";
+    foreach (array_keys($_ENV) as $name) {
+        if ($_ENV[$name] === '') {
+            echo "  $name\n";
+        }
+    }
+
     echo "\n=== total de vars en \$_SERVER: " . count($_SERVER) . " ===\n";
     echo "=== existe .env en el bundle: " . (file_exists(__DIR__ . '/../.env') ? 'SI' : 'NO') . " ===\n";
     echo "=== existe /tmp/config.php: " . (file_exists('/tmp/config.php') ? 'SI' : 'NO') . " ===\n";
