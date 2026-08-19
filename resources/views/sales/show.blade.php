@@ -69,9 +69,11 @@
                                             <div class="flex flex-col">
                                                 <span
                                                     class="text-sm font-black text-gray-900 dark:text-gray-100 tracking-tight">{{ $item->item_name }}</span>
-                                                <span
-                                                    class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IMEI:
-                                                    {{ $item->inventoryItem->imei ?? 'N/A' }}</span>
+                                                @if($item->inventoryItem)
+                                                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IMEI: {{ $item->inventoryItem->imei ?? 'N/A' }}</span>
+                                                @elseif($item->product)
+                                                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{{ $item->product->internal_code }}</span>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="px-8 py-6 text-center text-sm font-bold text-gray-600 dark:text-gray-400">

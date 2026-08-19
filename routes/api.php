@@ -63,7 +63,8 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
     Route::apiResource('price-lists', PriceListController::class);
     Route::put('price-lists/{priceList}/items', [PriceListController::class, 'syncItems'])->name('price-lists.items');
 
-    Route::apiResource('sales', SaleController::class);
+    // ->only(...): el controller no implementa update() (una venta no se edita, se anula).
+    Route::apiResource('sales', SaleController::class)->only(['index', 'store', 'show', 'destroy']);
     Route::apiResource('repairs', RepairController::class);
     Route::apiResource('technicians', TechnicianController::class);
     Route::apiResource('spare-parts', SparePartController::class);

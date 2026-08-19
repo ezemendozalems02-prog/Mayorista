@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\InventoryStatus;
+use App\Exceptions\InsufficientStockException;
 use App\Http\Controllers\Controller;
-use App\Models\InventoryItem;
 use App\Models\Sale;
+use App\Services\SaleService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SaleController extends Controller
 {
+    public function __construct(private SaleService $saleService)
+    {
+    }
+
     public function index(Request $request)
     {
         $sales = Sale::with(['client', 'seller'])
@@ -24,66 +28,35 @@ class SaleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
+            'client_id' => ['nullable', Rule::exists('clients', 'id')->where('organization_id', Auth::user()->organization_id)],
             'items' => 'required|array|min:1',
-            'items.*.inventory_item_id' => 'required|exists:inventory_items,id',
-            'items.*.unit_price' => 'required|numeric',
-            'currency' => 'required|string|size:3',
+            'items.*.product_id' => ['required', Rule::exists('products', 'id')->where('organization_id', Auth::user()->organization_id)],
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.unit_price' => 'nullable|numeric|min:0',
+            'currency' => 'nullable|string|size:3',
             'exchange_rate' => 'nullable|numeric',
-            'discount' => 'nullable|numeric',
+            'discount' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($request, $validated) {
-            $subtotal = 0;
-            $costTotal = 0;
+        try {
+            $sale = $this->saleService->createSale($validated, $validated['items'], $request->user());
+        } catch (InsufficientStockException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
-            foreach ($validated['items'] as $itemData) {
-                $subtotal += $itemData['unit_price'];
-                $invItem = InventoryItem::findOrFail($itemData['inventory_item_id']);
-                $costTotal += $invItem->purchase_price ?? 0;
-            }
-
-            $total = $subtotal - ($validated['discount'] ?? 0);
-
-            $sale = Sale::create([
-                'client_id' => $validated['client_id'] ?? null,
-                'seller_id' => $request->user()->id,
-                'sale_number' => 'SALE-' . strtoupper(Str::random(6)),
-                'status' => 'completed',
-                'currency' => $validated['currency'],
-                'exchange_rate' => $validated['exchange_rate'] ?? null,
-                'subtotal' => $subtotal,
-                'discount' => $validated['discount'] ?? 0,
-                'total' => $total,
-                'cost_total' => $costTotal,
-                'profit_total' => $total - $costTotal,
-                'notes' => $validated['notes'] ?? null,
-                'sold_at' => now(),
-            ]);
-
-            foreach ($validated['items'] as $itemData) {
-                $invItem = InventoryItem::findOrFail($itemData['inventory_item_id']);
-
-                $sale->items()->create([
-                    'inventory_item_id' => $invItem->id,
-                    'item_name' => $invItem->model,
-                    'unit_cost' => $invItem->purchase_price ?? 0,
-                    'unit_price' => $itemData['unit_price'],
-                    'quantity' => 1,
-                    'line_total' => $itemData['unit_price'],
-                ]);
-
-                // Update inventory status
-                $invItem->update(['status' => InventoryStatus::SOLD]);
-            }
-
-            return response()->json($sale->load('items'));
-        });
+        return response()->json($sale->load(['items.product', 'client']), 201);
     }
 
     public function show(Sale $sale)
     {
-        return response()->json($sale->load(['client', 'items', 'payments']));
+        return response()->json($sale->load(['client', 'items.product', 'payments']));
+    }
+
+    public function destroy(Sale $sale)
+    {
+        $this->saleService->voidSale($sale);
+
+        return response()->json(['message' => 'Venta anulada correctamente.']);
     }
 }

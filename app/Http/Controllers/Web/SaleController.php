@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Exceptions\InsufficientStockException;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Sale;
+use App\Services\SaleService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class SaleController extends Controller
 {
+    public function __construct(private SaleService $saleService)
+    {
+    }
+
     public function index(Request $request)
     {
         $orgId = auth()->user()->organization_id;
 
         $sales = Sale::where('organization_id', $orgId)
-            ->with(['client', 'seller', 'items.inventoryItem'])
+            ->with(['client', 'seller', 'items.inventoryItem', 'items.product'])
             ->when($request->search, function ($q, $search) {
+                // ilike (no like): Postgres es case-sensitive por defecto, a diferencia de MySQL.
                 $q->where(function ($query) use ($search) {
-                    $query->where('sale_number', 'like', "%{$search}%")
+                    $query->where('sale_number', 'ilike', "%{$search}%")
                         ->orWhereHas('client', function ($cq) use ($search) {
-                            $cq->where('full_name', 'like', "%{$search}%")
-                                ->orWhere('phone', 'like', "%{$search}%");
+                            $cq->where('full_name', 'ilike', "%{$search}%")
+                                ->orWhere('phone', 'ilike', "%{$search}%");
                         });
                 });
             })
@@ -51,13 +59,27 @@ class SaleController extends Controller
     public function create()
     {
         $orgId = auth()->user()->organization_id;
-        $clients = \App\Models\Client::where('organization_id', $orgId)->orderBy('full_name')->get();
-        $inventoryItems = \App\Models\InventoryItem::where('organization_id', $orgId)
-            ->where('status', \App\Enums\InventoryStatus::IN_STOCK)
-            ->orderBy('model')
+
+        $clients = \App\Models\Client::where('organization_id', $orgId)
+            ->select('id', 'full_name', 'business_name', 'client_type', 'discount_percentage')
+            ->orderBy('full_name')
             ->get();
 
-        return view('sales.create', compact('clients', 'inventoryItems'));
+        $products = Product::where('status', \App\Enums\ProductStatus::ACTIVE)
+            ->with('stock')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Product $p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'internal_code' => $p->internal_code,
+                'barcode' => $p->barcode,
+                'retail_price' => (float) ($p->retail_price ?? 0),
+                'wholesale_price' => (float) ($p->wholesale_price ?? $p->retail_price ?? 0),
+                'stock' => $p->current_stock,
+            ]);
+
+        return view('sales.create', compact('clients', 'products'));
     }
 
     public function store(Request $request)
@@ -67,8 +89,9 @@ class SaleController extends Controller
         $validated = $request->validate([
             'client_id' => ['nullable', Rule::exists('clients', 'id')->where('organization_id', $orgId)],
             'items' => 'required|array|min:1',
-            'items.*.item_ids' => 'required|string',
+            'items.*.product_id' => ['required', Rule::exists('products', 'id')->where('organization_id', $orgId)],
             'items.*.quantity' => 'required|integer|min:1',
+            'items.*.unit_price' => 'nullable|numeric|min:0',
             'currency' => 'required|string|max:3',
             'exchange_rate' => 'nullable|numeric',
             'discount' => 'nullable|numeric|min:0',
@@ -76,84 +99,25 @@ class SaleController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($request, $validated, $orgId) {
-            // Handle Quick Client Creation
-            $clientId = $validated['client_id'] ?? null;
-            if (!$clientId && $request->filled('new_client_name')) {
-                $client = \App\Models\Client::create([
-                    'organization_id' => $orgId,
-                    'full_name' => $request->new_client_name,
-                    'phone' => $request->new_client_phone,
-                ]);
-                $clientId = $client->id;
-            }
-
-            $itemsData = $request->input('items');
-            $subtotal = 0;
-            $costTotal = 0;
-
-            $sale = \App\Models\Sale::create([
+        // Alta rapida de cliente (igual que antes: si no se eligio uno existente).
+        $clientId = $validated['client_id'] ?? null;
+        if (! $clientId && $request->filled('new_client_name')) {
+            $client = \App\Models\Client::create([
                 'organization_id' => $orgId,
-                'client_id' => $clientId,
-                'seller_id' => auth()->id(),
-                'sale_number' => 'S-' . strtoupper(\Illuminate\Support\Str::random(8)),
-                'status' => 'completed',
-                'currency' => $validated['currency'],
-                'exchange_rate' => $validated['exchange_rate'] ?? 1,
-                'discount' => $validated['discount'] ?? 0,
-                'subtotal' => 0,
-                'total' => 0,
-                'cost_total' => 0,
-                'profit_total' => 0,
-                'sold_at' => now(),
+                'full_name' => $request->new_client_name,
+                'phone' => $request->new_client_phone,
             ]);
+            $clientId = $client->id;
+        }
+        $validated['client_id'] = $clientId;
 
-            foreach ($itemsData as $itemInput) {
-                $allowedIds = json_decode($itemInput['item_ids'], true);
-                if (!is_array($allowedIds))
-                    continue;
+        try {
+            $sale = $this->saleService->createSale($validated, $validated['items'], $request->user());
+        } catch (InsufficientStockException $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
 
-                $qty = $itemInput['quantity'] ?? 1;
-
-                // Fetch exactly $qty available items from the group
-                $invItems = \App\Models\InventoryItem::whereIn('id', $allowedIds)
-                    ->where('status', \App\Enums\InventoryStatus::IN_STOCK)
-                    ->limit($qty)
-                    ->get();
-
-                if ($invItems->count() < $qty) {
-                    throw new \Exception("No hay suficiente stock para cubrir la cantidad solicitada.");
-                }
-
-                foreach ($invItems as $invItem) {
-                    /** @var \App\Models\InventoryItem $invItem */
-                    \App\Models\SaleItem::create([
-                        'sale_id' => $sale->id,
-                        'inventory_item_id' => $invItem->id,
-                        'item_name' => "{$invItem->brand} {$invItem->model} ({$invItem->storage})",
-                        'unit_cost' => $invItem->purchase_price,
-                        'unit_price' => $invItem->sale_price,
-                        'quantity' => 1,
-                        'line_total' => $invItem->sale_price,
-                    ]);
-
-                    $subtotal += $invItem->sale_price;
-                    $costTotal += $invItem->purchase_price;
-
-                    $invItem->update(['status' => \App\Enums\InventoryStatus::SOLD]);
-                }
-            }
-
-            $total = $subtotal - ($validated['discount'] ?? 0);
-            $profit = $total - $costTotal;
-
-            $sale->update([
-                'subtotal' => $subtotal,
-                'total' => $total,
-                'cost_total' => $costTotal,
-                'profit_total' => $profit,
-            ]);
-
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($validated, $orgId, $sale) {
             // Record Payment
             \App\Models\Payment::create([
                 'organization_id' => $orgId,
@@ -165,24 +129,6 @@ class SaleController extends Controller
                 'amount' => $sale->total,
                 'paid_at' => now(),
             ]);
-
-            // Record Trade-In if applicable
-            if ($request->boolean('has_trade_in')) {
-                \App\Models\TradeIn::create([
-                    'organization_id' => $orgId,
-                    'sale_id' => $sale->id,
-                    'client_id' => $sale->client_id,
-                    'brand' => 'Apple', // Default or parse from model
-                    'model' => $request->trade_in_model,
-                    'storage' => $request->trade_in_storage,
-                    'imei' => $request->trade_in_imei,
-                    'battery_health' => $request->trade_in_battery_health,
-                    'appraised_value' => $request->trade_in_value,
-                    'currency' => $sale->currency,
-                    'notes' => $request->trade_in_notes,
-                    'condition' => 'Used', // Default
-                ]);
-            }
 
             // Notifications
             try {
@@ -214,7 +160,7 @@ class SaleController extends Controller
 
     public function show(Sale $sale)
     {
-        $sale->load(['client', 'seller', 'items.inventoryItem', 'payments']);
+        $sale->load(['client', 'seller', 'items.inventoryItem', 'items.product', 'payments']);
         return view('sales.show', compact('sale'));
     }
 
@@ -222,7 +168,7 @@ class SaleController extends Controller
     {
         abort_if($sale->organization_id !== auth()->user()->organization_id, 403);
 
-        $sale->load(['client', 'seller', 'items.inventoryItem', 'payments', 'organization.fiscalSetting']);
+        $sale->load(['client', 'seller', 'items.inventoryItem', 'items.product', 'payments', 'organization.fiscalSetting']);
 
         $pdf = Pdf::loadView('pdf.sale-ticket', [
             'sale'          => $sale,
@@ -237,21 +183,8 @@ class SaleController extends Controller
 
     public function destroy(Sale $sale)
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($sale) {
-            // Restore inventory items status
-            foreach ($sale->items as $item) {
-                if ($item->inventoryItem) {
-                    $item->inventoryItem->update(['status' => \App\Enums\InventoryStatus::IN_STOCK]);
-                }
-            }
+        $this->saleService->voidSale($sale);
 
-            // Delete associated payments
-            $sale->payments()->delete();
-
-            // Delete the sale (SoftDelete)
-            $sale->delete();
-
-            return redirect()->route('sale.index')->with('success', "Venta {$sale->sale_number} anulada con éxito.");
-        });
+        return redirect()->route('sale.index')->with('success', "Venta {$sale->sale_number} anulada con éxito.");
     }
 }
