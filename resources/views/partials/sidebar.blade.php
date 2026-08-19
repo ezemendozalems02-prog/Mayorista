@@ -64,6 +64,7 @@
                     ['label' => 'Inventario', 'icon' => 'package', 'route' => 'inventory.index', 'feature' => 'inventory_basic', 'roles' => ['owner', 'manager', 'technician', 'seller']],
                     ['label' => 'Productos', 'icon' => 'box', 'route' => 'product.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Stock', 'icon' => 'boxes', 'route' => 'stock.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager', 'seller']],
+                    ['label' => 'Inventario Físico', 'icon' => 'clipboard-list', 'route' => 'physical-count.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
                     ['label' => 'Categorías', 'icon' => 'folder-tree', 'route' => 'category.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
                     ['label' => 'Marcas', 'icon' => 'tag', 'route' => 'brand.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
                     ['label' => 'Proveedores', 'icon' => 'truck', 'route' => 'supplier.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],

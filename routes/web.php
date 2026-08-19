@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\BranchController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\InventoryController;
+use App\Http\Controllers\Web\PhysicalCountController;
 use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\RepairController;
 use App\Http\Controllers\Web\SaleController;
@@ -148,8 +149,20 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
 
     // ── Stock (Fase 6) ───────────────────────────────────────────────────────
     Route::get('/stock', [StockController::class, 'index'])->name('stock.index')->middleware(['feature:catalog', 'role:owner,manager,seller']);
+    Route::get('/stock/buscar', [StockController::class, 'findByBarcode'])->name('stock.find-by-barcode')->middleware(['feature:catalog', 'role:owner,manager,seller']);
     Route::get('/stock/{product}/movimientos', [StockController::class, 'movements'])->name('stock.movements')->middleware(['feature:catalog', 'role:owner,manager,seller']);
     Route::post('/stock/{product}/ajustar', [StockController::class, 'adjust'])->name('stock.adjust')->middleware(['feature:catalog', 'role:owner,manager']);
+
+    // ── Inventario físico (Fase 8) ───────────────────────────────────────────
+    Route::prefix('inventario-fisico')->group(function () {
+        Route::get('/', [PhysicalCountController::class, 'index'])->name('physical-count.index');
+        Route::get('/crear', [PhysicalCountController::class, 'create'])->name('physical-count.create');
+        Route::post('/', [PhysicalCountController::class, 'store'])->name('physical-count.store');
+        Route::get('/{physicalCount}', [PhysicalCountController::class, 'show'])->name('physical-count.show');
+        Route::post('/{physicalCount}/guardar', [PhysicalCountController::class, 'save'])->name('physical-count.save');
+        Route::post('/{physicalCount}/finalizar', [PhysicalCountController::class, 'finalize'])->name('physical-count.finalize');
+        Route::post('/{physicalCount}/cancelar', [PhysicalCountController::class, 'cancel'])->name('physical-count.cancel');
+    })->middleware(['feature:catalog', 'role:owner,manager']);
 
     Route::get('/suscripcion', [\App\Http\Controllers\Web\SubscriptionController::class, 'index'])->name('subscription.index')->middleware('role:owner,manager');
     Route::get('/suscripcion/checkout', [\App\Http\Controllers\Web\SubscriptionController::class, 'checkout'])->name('subscription.checkout')->middleware('role:owner,manager');

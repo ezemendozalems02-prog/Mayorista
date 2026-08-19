@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\InventoryController;
+use App\Http\Controllers\Api\PhysicalCountController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RepairController;
 use App\Http\Controllers\Api\SaleController;
@@ -43,6 +44,19 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
     Route::get('stock', [StockController::class, 'index'])->name('stock.index');
     Route::get('products/{product}/stock-movements', [StockController::class, 'movements'])->name('stock.movements');
     Route::post('products/{product}/stock-movements', [StockController::class, 'storeMovement'])->name('stock.movements.store');
+
+    // ── Escaner de codigo de barras (Fase 7) ─────────────────────────────────
+    Route::get('stock/lookup', [StockController::class, 'lookup'])->name('stock.lookup');
+
+    // ── Inventario fisico (Fase 8) ───────────────────────────────────────────
+    Route::prefix('physical-counts')->as('physical-counts.')->group(function () {
+        Route::get('/', [PhysicalCountController::class, 'index'])->name('index');
+        Route::post('/', [PhysicalCountController::class, 'store'])->name('store');
+        Route::get('/{physicalCount}', [PhysicalCountController::class, 'show'])->name('show');
+        Route::put('/{physicalCount}/counts', [PhysicalCountController::class, 'saveCounts'])->name('counts');
+        Route::post('/{physicalCount}/finalize', [PhysicalCountController::class, 'finalize'])->name('finalize');
+        Route::post('/{physicalCount}/cancel', [PhysicalCountController::class, 'cancel'])->name('cancel');
+    });
 
     Route::apiResource('sales', SaleController::class);
     Route::apiResource('repairs', RepairController::class);

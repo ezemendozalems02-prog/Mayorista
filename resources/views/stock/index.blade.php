@@ -33,6 +33,13 @@
             </form>
         </div>
 
+        <!-- Escaner (Fase 7): escanear un producto salta directo a su historial de movimientos -->
+        <div x-data="{}" @mito:barcode-scanned.window="window.location.href = '{{ route('stock.find-by-barcode') }}?barcode=' + encodeURIComponent($event.detail.code)"
+            class="bg-white dark:bg-dark-alt rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm p-4 md:p-5">
+            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3 ml-1">Escanear Producto</p>
+            @include('partials.barcode-scanner', ['placeholder' => 'Escaneá un código para ir directo a sus movimientos...', 'autofocus' => false])
+        </div>
+
         <div class="bg-white dark:bg-dark-alt rounded-[40px] border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none overflow-hidden relative">
             <div class="overflow-x-auto">
                 <table class="w-full">

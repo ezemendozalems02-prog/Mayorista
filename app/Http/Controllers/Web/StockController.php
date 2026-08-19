@@ -39,6 +39,23 @@ class StockController extends Controller
         return view('stock.index', compact('products'));
     }
 
+    /**
+     * GET /stock/buscar?barcode=X — usado por el escaner (Fase 7): busca el
+     * producto por codigo de barras exacto y salta directo a sus movimientos.
+     */
+    public function findByBarcode(Request $request)
+    {
+        $request->validate(['barcode' => 'required|string']);
+
+        $product = Product::where('barcode', $request->barcode)->first();
+
+        if (! $product) {
+            return redirect()->route('stock.index')->with('error', "No se encontró ningún producto con el código {$request->barcode}.");
+        }
+
+        return redirect()->route('stock.movements', $product);
+    }
+
     public function movements(Product $product)
     {
         $movements = $product->stockMovements()

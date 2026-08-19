@@ -38,6 +38,79 @@
     <!-- Alpine.js (Interactivity) -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    <!-- Escaner de codigo de barras (Fase 7): input de lector fisico (USB/Bluetooth,
+         se comporta como teclado) + camara via BarcodeDetector nativo cuando el
+         navegador lo soporta. Ver resources/views/partials/barcode-scanner.blade.php -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('barcodeScanner', () => ({
+                code: '',
+                cameraOpen: false,
+                cameraSupported: 'BarcodeDetector' in window,
+                stream: null,
+                detector: null,
+                rafId: null,
+
+                submitScan() {
+                    const value = this.code.trim();
+                    if (!value) return;
+                    window.dispatchEvent(new CustomEvent('mito:barcode-scanned', { detail: { code: value } }));
+                    this.code = '';
+                    this.$nextTick(() => this.$refs.input && this.$refs.input.focus());
+                },
+
+                toggleCamera() {
+                    if (!this.cameraSupported) {
+                        window.toast('Tu navegador no soporta escaneo por cámara. Usá un lector USB/Bluetooth o escribí el código.', 'error');
+                        return;
+                    }
+                    this.cameraOpen ? this.closeCamera() : this.openCamera();
+                },
+
+                async openCamera() {
+                    try {
+                        this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                        this.cameraOpen = true;
+                        this.$nextTick(() => {
+                            this.$refs.video.srcObject = this.stream;
+                            this.detector = new BarcodeDetector({
+                                formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'qr_code'],
+                            });
+                            this.scanLoop();
+                        });
+                    } catch (err) {
+                        window.toast('No se pudo acceder a la cámara: ' + err.message, 'error');
+                    }
+                },
+
+                async scanLoop() {
+                    if (!this.cameraOpen) return;
+                    try {
+                        const codes = await this.detector.detect(this.$refs.video);
+                        if (codes.length > 0) {
+                            this.code = codes[0].rawValue;
+                            this.closeCamera();
+                            this.submitScan();
+                            return;
+                        }
+                    } catch (e) {
+                        // Frame no listo todavia u otro error transitorio; se reintenta.
+                    }
+                    this.rafId = requestAnimationFrame(() => this.scanLoop());
+                },
+
+                closeCamera() {
+                    this.cameraOpen = false;
+                    if (this.rafId) cancelAnimationFrame(this.rafId);
+                    if (this.stream) {
+                        this.stream.getTracks().forEach((t) => t.stop());
+                        this.stream = null;
+                    }
+                },
+            }));
+        });
+    </script>
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">

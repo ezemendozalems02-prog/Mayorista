@@ -44,6 +44,25 @@ class StockController extends Controller
     }
 
     /**
+     * GET /stock/lookup?barcode=X — busqueda exacta por codigo de barras (Fase 7,
+     * pensado para el lector fisico/camara: buscar y saltar directo al producto).
+     */
+    public function lookup(Request $request)
+    {
+        $request->validate(['barcode' => 'required|string']);
+
+        $product = Product::with(['category', 'brand', 'stock'])
+            ->where('barcode', $request->barcode)
+            ->first();
+
+        if (! $product) {
+            return response()->json(['message' => 'No se encontró ningún producto con ese código de barras.'], 404);
+        }
+
+        return new ProductResource($product);
+    }
+
+    /**
      * GET /products/{product}/stock-movements — historial paginado del ledger.
      */
     public function movements(Request $request, Product $product)
