@@ -18,12 +18,16 @@ class ClientController extends Controller
             ->withCount('sales')
             ->withSum('sales', 'total')
             ->when($request->search, function ($query, $search) {
+                // ilike (no like): Postgres es case-sensitive por defecto, a diferencia de MySQL.
                 $query->where(function ($q) use ($search) {
-                    $q->where('full_name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('document_number', 'like', "%{$search}%");
+                    $q->where('full_name', 'ilike', "%{$search}%")
+                        ->orWhere('business_name', 'ilike', "%{$search}%")
+                        ->orWhere('phone', 'ilike', "%{$search}%")
+                        ->orWhere('document_number', 'ilike', "%{$search}%")
+                        ->orWhere('cuit', 'ilike', "%{$search}%");
                 });
             })
+            ->when($request->filled('client_type'), fn ($q) => $q->where('client_type', $request->client_type))
             ->when($request->filter === 'best', function ($q) {
                 $q->orderBy('sales_count', 'desc');
             })
@@ -45,6 +49,8 @@ class ClientController extends Controller
 
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
+            'client_type' => ['required', new \Illuminate\Validation\Rules\Enum(\App\Enums\ClientType::class)],
+            'business_name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => [
                 'nullable',
@@ -53,6 +59,10 @@ class ClientController extends Controller
                 Rule::unique('clients', 'email')->where('organization_id', $orgId),
             ],
             'document_number' => 'nullable|string|max:20',
+            'cuit' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'credit_limit' => 'nullable|numeric|min:0',
+            'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'notes' => 'nullable|string',
         ]);
 
@@ -116,6 +126,8 @@ class ClientController extends Controller
 
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
+            'client_type' => ['required', new \Illuminate\Validation\Rules\Enum(\App\Enums\ClientType::class)],
+            'business_name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => [
                 'nullable',
@@ -126,6 +138,10 @@ class ClientController extends Controller
                     ->ignore($client->id),
             ],
             'document_number' => 'nullable|string|max:20',
+            'cuit' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'credit_limit' => 'nullable|numeric|min:0',
+            'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'notes' => 'nullable|string',
         ]);
 

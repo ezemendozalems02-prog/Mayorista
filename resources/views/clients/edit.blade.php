@@ -32,17 +32,47 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
+                    <!-- Client Type -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Tipo de Cliente <span class="text-red-500">*</span></label>
+                        <div class="flex items-center bg-gray-100 dark:bg-dark p-1.5 rounded-2xl w-full md:w-auto md:inline-flex">
+                            <label class="flex-1 md:flex-none">
+                                <input type="radio" name="client_type" value="retail" class="peer sr-only" {{ old('client_type', $client->client_type?->value) == 'retail' ? 'checked' : '' }}>
+                                <span class="block text-center px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest cursor-pointer text-gray-400 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-lg transition-all">Minorista</span>
+                            </label>
+                            <label class="flex-1 md:flex-none">
+                                <input type="radio" name="client_type" value="wholesale" class="peer sr-only" {{ old('client_type', $client->client_type?->value) == 'wholesale' ? 'checked' : '' }}>
+                                <span class="block text-center px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest cursor-pointer text-gray-400 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-lg transition-all">Mayorista</span>
+                            </label>
+                        </div>
+                        @error('client_type') <p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p> @enderror
+                    </div>
+
                     <!-- Full Name -->
                     <div class="space-y-2">
                         <label
                             class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Nombre
-                            Completo <span class="text-red-500">*</span></label>
+                            de Contacto <span class="text-red-500">*</span></label>
                         <div class="relative group">
                             <i data-lucide="user"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors"></i>
                             <input type="text" name="full_name" value="{{ old('full_name', $client->full_name) }}" required
                                 class="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
                                 placeholder="Ej: Juan Pérez">
+                        </div>
+                    </div>
+
+                    <!-- Business Name -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Razón
+                            Social (si es mayorista)</label>
+                        <div class="relative group">
+                            <i data-lucide="building-2"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors"></i>
+                            <input type="text" name="business_name" value="{{ old('business_name', $client->business_name) }}"
+                                class="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
+                                placeholder="Ej: Jugueterías del Sur SRL">
                         </div>
                     </div>
 
@@ -86,6 +116,41 @@
                                 class="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
                                 placeholder="Número de identificación">
                         </div>
+                    </div>
+
+                    <!-- CUIT -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">CUIT</label>
+                        <input type="text" name="cuit" value="{{ old('cuit', $client->cuit) }}"
+                            class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
+                            placeholder="20-12345678-9">
+                        @error('cuit') <p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <!-- Address -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Dirección</label>
+                        <input type="text" name="address" value="{{ old('address', $client->address) }}"
+                            class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold">
+                    </div>
+
+                    <!-- Credit Limit -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Límite de Crédito</label>
+                        <input type="number" step="0.01" min="0" name="credit_limit" value="{{ old('credit_limit', $client->credit_limit) }}"
+                            class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
+                            placeholder="Opcional">
+                    </div>
+
+                    <!-- Discount -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Descuento por Defecto (%)</label>
+                        <input type="number" step="0.01" min="0" max="100" name="discount_percentage" value="{{ old('discount_percentage', $client->discount_percentage) }}"
+                            class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold">
                     </div>
 
                     <!-- Notes -->

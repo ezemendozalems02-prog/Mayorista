@@ -38,6 +38,20 @@
                         class="px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all {{ request('filter') == 'best' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-400 hover:text-gray-600' }}">
                         Mejores Clientes </a>
                 </div>
+
+                <!-- Client Type Filter -->
+                <div
+                    class="flex items-center bg-white dark:bg-dark-alt p-1.5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <a href="{{ route('client.index', request()->except('client_type')) }}"
+                        class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all {{ !request('client_type') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-400 hover:text-gray-600' }}">
+                        Todos los tipos </a>
+                    <a href="{{ route('client.index', array_merge(request()->query(), ['client_type' => 'retail'])) }}"
+                        class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all {{ request('client_type') == 'retail' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-400 hover:text-gray-600' }}">
+                        Minoristas </a>
+                    <a href="{{ route('client.index', array_merge(request()->query(), ['client_type' => 'wholesale'])) }}"
+                        class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all {{ request('client_type') == 'wholesale' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-400 hover:text-gray-600' }}">
+                        Mayoristas </a>
+                </div>
             </div>
 
             <a href="{{ route('client.create') }}"
@@ -56,6 +70,7 @@
                         <tr
                             class="bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5 text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] italic">
                             <th class="px-8 py-5 text-left">Info. de Cliente</th>
+                            <th class="px-8 py-5 text-left hidden lg:table-cell">Tipo</th>
                             <th class="px-8 py-5 text-left hidden md:table-cell">Documento</th>
                             <th class="px-8 py-5 text-left hidden sm:table-cell">Compras</th>
                             <th class="px-8 py-5 text-left hidden sm:table-cell">Total Invertido</th>
@@ -75,7 +90,7 @@
                                         <div>
                                             <p
                                                 class="text-sm font-black text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors italic tracking-tight">
-                                                {{ $client->full_name }}
+                                                {{ $client->display_name }}
                                             </p>
                                             <p
                                                 class="text-[10px] text-gray-400 font-bold flex items-center gap-1 mt-1 uppercase tracking-tighter italic">
@@ -85,8 +100,15 @@
                                         </div>
                                     </div>
                                 </td>
+                                <td class="px-8 py-6 hidden lg:table-cell">
+                                    @if($client->client_type?->value === 'wholesale')
+                                        <span class="text-[10px] font-black uppercase bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Mayorista</span>
+                                    @else
+                                        <span class="text-[10px] font-black uppercase bg-gray-400/10 text-gray-500 px-3 py-1 rounded-full">Minorista</span>
+                                    @endif
+                                </td>
                                 <td class="px-8 py-6 text-xs font-bold text-gray-500 dark:text-gray-400 italic hidden md:table-cell">
-                                    {{ $client->document_number ?? '-' }}
+                                    {{ $client->cuit ?? $client->document_number ?? '-' }}
                                 </td>
                                 <td class="px-8 py-6 hidden sm:table-cell">
                                     <span
@@ -113,7 +135,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="py-20 text-center animate-pulse">
+                                <td colspan="6" class="py-20 text-center animate-pulse">
                                     <div class="flex flex-col items-center justify-center text-gray-400">
                                         <i data-lucide="user-plus" class="w-16 h-16 mb-4 opacity-20"></i>
                                         <p class="text-lg font-black tracking-tight italic">No encontramos clientes</p>

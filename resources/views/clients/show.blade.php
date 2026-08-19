@@ -13,7 +13,17 @@
                     <span class="text-2xl font-black text-primary uppercase">{{ $client->full_name[0] }}</span>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black tracking-tight dark:text-gray-100 italic">{{ $client->full_name }}</h1>
+                    <h1 class="text-3xl font-black tracking-tight dark:text-gray-100 italic flex items-center gap-3">
+                        {{ $client->display_name }}
+                        @if($client->client_type?->value === 'wholesale')
+                            <span class="text-[10px] font-black uppercase bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20 not-italic">Mayorista</span>
+                        @else
+                            <span class="text-[10px] font-black uppercase bg-gray-400/10 text-gray-500 px-3 py-1 rounded-full not-italic">Minorista</span>
+                        @endif
+                    </h1>
+                    @if($client->business_name)
+                        <p class="text-xs text-gray-400 font-bold mt-0.5">Contacto: {{ $client->full_name }}</p>
+                    @endif
                     <div class="flex items-center gap-3 mt-1">
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
                             <i data-lucide="calendar" class="w-3 h-3"></i> Cliente desde
@@ -80,6 +90,50 @@
                                     {{ $client->document_number ?? 'No registrado' }}</p>
                             </div>
                         </div>
+                        @if($client->cuit)
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-dark">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="receipt" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">CUIT</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ $client->cuit }}</p>
+                            </div>
+                        </div>
+                        @endif
+                        @if($client->address)
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-dark">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dirección</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ $client->address }}</p>
+                            </div>
+                        </div>
+                        @endif
+                        @if($client->discount_percentage > 0)
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-dark">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="percent" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Descuento por Defecto</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ $client->discount_percentage }}%</p>
+                            </div>
+                        </div>
+                        @endif
+                        @if($client->credit_limit)
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-dark">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <i data-lucide="credit-card" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Límite de Crédito</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100">${{ number_format($client->credit_limit, 2) }}</p>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
 
