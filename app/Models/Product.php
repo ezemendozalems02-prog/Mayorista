@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -82,5 +84,24 @@ class Product extends Model
             ->using(ProductSupplier::class)
             ->withPivot(['supplier_sku', 'cost', 'is_primary'])
             ->withTimestamps();
+    }
+
+    public function stock(): HasOne
+    {
+        return $this->hasOne(ProductStock::class);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    /**
+     * Cantidad actual en stock. 0 si todavia no existe la fila cacheada
+     * (producto sin ningun movimiento registrado).
+     */
+    public function getCurrentStockAttribute(): int
+    {
+        return $this->stock?->quantity ?? 0;
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\RepairController;
 use App\Http\Controllers\Web\SaleController;
 use App\Http\Controllers\Web\ClientController;
+use App\Http\Controllers\Web\StockController;
 use App\Http\Controllers\Web\SupplierController;
 use App\Http\Controllers\Web\TechnicianController;
 use Illuminate\Support\Facades\Route;
@@ -144,6 +145,11 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
         'update' => 'supplier.update',
         'destroy' => 'supplier.destroy',
     ])->middleware(['feature:catalog', 'role:owner,manager']);
+
+    // ── Stock (Fase 6) ───────────────────────────────────────────────────────
+    Route::get('/stock', [StockController::class, 'index'])->name('stock.index')->middleware(['feature:catalog', 'role:owner,manager,seller']);
+    Route::get('/stock/{product}/movimientos', [StockController::class, 'movements'])->name('stock.movements')->middleware(['feature:catalog', 'role:owner,manager,seller']);
+    Route::post('/stock/{product}/ajustar', [StockController::class, 'adjust'])->name('stock.adjust')->middleware(['feature:catalog', 'role:owner,manager']);
 
     Route::get('/suscripcion', [\App\Http\Controllers\Web\SubscriptionController::class, 'index'])->name('subscription.index')->middleware('role:owner,manager');
     Route::get('/suscripcion/checkout', [\App\Http\Controllers\Web\SubscriptionController::class, 'checkout'])->name('subscription.checkout')->middleware('role:owner,manager');

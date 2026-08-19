@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RepairController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SparePartController;
+use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TechnicianController;
 use App\Http\Controllers\Api\Arca\ArcaController;
@@ -37,6 +38,12 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
     Route::apiResource('brands', BrandController::class);
     Route::apiResource('suppliers', SupplierController::class);
     Route::apiResource('products', ProductController::class);
+
+    // ── Stock (Fase 6) ───────────────────────────────────────────────────────
+    Route::get('stock', [StockController::class, 'index'])->name('stock.index');
+    Route::get('products/{product}/stock-movements', [StockController::class, 'movements'])->name('stock.movements');
+    Route::post('products/{product}/stock-movements', [StockController::class, 'storeMovement'])->name('stock.movements.store');
+
     Route::apiResource('sales', SaleController::class);
     Route::apiResource('repairs', RepairController::class);
     Route::apiResource('technicians', TechnicianController::class);

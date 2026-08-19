@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::query()
-            ->with(['category', 'brand'])
+            ->with(['category', 'brand', 'stock'])
             ->when($request->search, function ($query, $search) {
                 // ilike (no like): Postgres es case-sensitive por defecto, a diferencia de MySQL.
                 $query->where(function ($q) use ($search) {
@@ -39,8 +39,12 @@ class ProductController extends Controller
                 $query->where('status', $request->status);
             })
             ->when($request->boolean('low_stock'), function ($query) {
-                // Placeholder hasta que exista product_stocks (Fase 6): sin stock real todavia,
-                // por ahora no filtra nada para no romper la respuesta.
+                // Productos cuyo stock actual esta en o por debajo del minimo configurado.
+                // Sin fila en product_stocks todavia = stock 0, tambien cuenta como bajo.
+                $query->where(function ($q) {
+                    $q->whereHas('stock', fn ($s) => $s->whereColumn('quantity', '<=', 'products.min_stock'))
+                        ->orWhereDoesntHave('stock');
+                })->where('min_stock', '>', 0);
             })
             ->orderBy('name')
             ->paginate($request->per_page ?? 15);
