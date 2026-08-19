@@ -6,6 +6,8 @@ use App\Enums\StockMovementType;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\StockMovement;
+use App\Models\User;
+use App\Notifications\ProductLowStockNotification;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -53,11 +55,38 @@ class StockService
                 'user_id' => $userId ?? Auth::id(),
             ]);
 
+            $before = $stock->quantity;
             $stock->quantity += $quantityDelta;
             $stock->save();
 
+            $this->notifyIfLowStockCrossed($product, $before, $stock->quantity);
+
             return $movement;
         });
+    }
+
+    /**
+     * Alerta de stock bajo (Fase 20): se dispara SOLO en el movimiento que
+     * hace que el stock pase de estar por encima de min_stock a estar en o
+     * por debajo -- no en cada movimiento mientras ya esta bajo, para no
+     * spamear a los dueños. Si min_stock no esta configurado (0 o null),
+     * no hay umbral y no se notifica nunca para ese producto.
+     */
+    private function notifyIfLowStockCrossed(Product $product, int $before, int $after): void
+    {
+        $threshold = (int) ($product->min_stock ?? 0);
+
+        if ($threshold <= 0 || $before <= $threshold || $after > $threshold) {
+            return;
+        }
+
+        $owners = User::where('organization_id', $product->organization_id)
+            ->where('role', \App\Enums\UserRole::OWNER)
+            ->get();
+
+        foreach ($owners as $owner) {
+            $owner->notify(new ProductLowStockNotification($product, $after));
+        }
     }
 
     public function currentStock(Product $product): int
