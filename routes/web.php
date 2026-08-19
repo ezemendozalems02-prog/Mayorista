@@ -2,12 +2,16 @@
 
 use App\Http\Controllers\Web\ArcaController;
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\BranchController;
+use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\InventoryController;
+use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\RepairController;
 use App\Http\Controllers\Web\SaleController;
 use App\Http\Controllers\Web\ClientController;
+use App\Http\Controllers\Web\SupplierController;
 use App\Http\Controllers\Web\TechnicianController;
 use Illuminate\Support\Facades\Route;
 
@@ -103,6 +107,43 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
         'destroy' => 'client.destroy',
     ])->middleware(['feature:clients', 'role:owner,manager,seller,technician']);
     Route::post('/clientes/quick-store', [ClientController::class, 'quickStore'])->name('client.quick-store')->middleware('feature:clients');
+
+    // ── Catálogo (Fase 5) ────────────────────────────────────────────────────
+    Route::resource('productos', ProductController::class)->except('show')->parameters(['productos' => 'product'])->names([
+        'index' => 'product.index',
+        'create' => 'product.create',
+        'store' => 'product.store',
+        'edit' => 'product.edit',
+        'update' => 'product.update',
+        'destroy' => 'product.destroy',
+    ])->middleware(['feature:catalog', 'role:owner,manager,seller']);
+
+    Route::resource('categorias', CategoryController::class)->except('show')->parameters(['categorias' => 'category'])->names([
+        'index' => 'category.index',
+        'create' => 'category.create',
+        'store' => 'category.store',
+        'edit' => 'category.edit',
+        'update' => 'category.update',
+        'destroy' => 'category.destroy',
+    ])->middleware(['feature:catalog', 'role:owner,manager']);
+
+    Route::resource('marcas', BrandController::class)->except('show')->parameters(['marcas' => 'brand'])->names([
+        'index' => 'brand.index',
+        'create' => 'brand.create',
+        'store' => 'brand.store',
+        'edit' => 'brand.edit',
+        'update' => 'brand.update',
+        'destroy' => 'brand.destroy',
+    ])->middleware(['feature:catalog', 'role:owner,manager']);
+
+    Route::resource('proveedores', SupplierController::class)->except('show')->parameters(['proveedores' => 'supplier'])->names([
+        'index' => 'supplier.index',
+        'create' => 'supplier.create',
+        'store' => 'supplier.store',
+        'edit' => 'supplier.edit',
+        'update' => 'supplier.update',
+        'destroy' => 'supplier.destroy',
+    ])->middleware(['feature:catalog', 'role:owner,manager']);
 
     Route::get('/suscripcion', [\App\Http\Controllers\Web\SubscriptionController::class, 'index'])->name('subscription.index')->middleware('role:owner,manager');
     Route::get('/suscripcion/checkout', [\App\Http\Controllers\Web\SubscriptionController::class, 'checkout'])->name('subscription.checkout')->middleware('role:owner,manager');

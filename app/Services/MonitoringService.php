@@ -40,9 +40,9 @@ class MonitoringService
     public static function audit(
         string $module, 
         string $action, 
-        $model = null, 
-        array $oldValues = null, 
-        array $newValues = null
+        $model = null,
+        ?array $oldValues = null,
+        ?array $newValues = null
     ) {
         AuditLog::create([
             'organization_id' => auth()->user()?->organization_id,

@@ -24,7 +24,7 @@ trait HasOrganization
             if (Auth::check()) {
                 $user = Auth::user();
                 if ($user->role !== \App\Enums\UserRole::SUPER_ADMIN) {
-                    $builder->where($builder->getQuery()->from . '.organization_id', $user->organization_id);
+                    $builder->where(static::qualifiedOrganizationColumn($builder), $user->organization_id);
                 }
             }
         });
@@ -33,5 +33,27 @@ trait HasOrganization
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    /**
+     * Resuelve "tabla.organization_id" para el where del scope global, incluso cuando
+     * el builder tiene un alias (ej. "categories as laravel_reserved_0", que Eloquent
+     * genera con withCount()/withAggregate() en relaciones auto-referenciadas como
+     * Category::children()). Sin esto, la concatenacion literal del nombre de tabla
+     * produce SQL invalido ("categories" as "laravel_reserved_0.organization_id").
+     */
+    protected static function qualifiedOrganizationColumn(Builder $builder): string
+    {
+        $table = $builder->getQuery()->from;
+
+        if ($table instanceof \Illuminate\Database\Query\Expression) {
+            $table = $table->getValue($builder->getQuery()->getGrammar());
+        }
+
+        if (is_string($table) && preg_match('/\s+as\s+(\S+)$/i', $table, $matches)) {
+            $table = $matches[1];
+        }
+
+        return $table . '.organization_id';
     }
 }

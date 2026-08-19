@@ -1,12 +1,16 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\InventoryController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RepairController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SparePartController;
+use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TechnicianController;
 use App\Http\Controllers\Api\Arca\ArcaController;
 use App\Http\Controllers\Api\Arca\ArcaLogController;
@@ -27,6 +31,12 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
 
     Route::apiResource('clients', ClientController::class);
     Route::apiResource('inventory', InventoryController::class);
+
+    // ── Catalogo (Fase 5) ────────────────────────────────────────────────────
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('brands', BrandController::class);
+    Route::apiResource('suppliers', SupplierController::class);
+    Route::apiResource('products', ProductController::class);
     Route::apiResource('sales', SaleController::class);
     Route::apiResource('repairs', RepairController::class);
     Route::apiResource('technicians', TechnicianController::class);
