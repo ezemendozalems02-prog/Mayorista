@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PhysicalCountController;
+use App\Http\Controllers\Api\PriceListController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RepairController;
 use App\Http\Controllers\Api\SaleController;
@@ -57,6 +58,10 @@ Route::middleware('auth:sanctum')->as('api.')->group(function () {
         Route::post('/{physicalCount}/finalize', [PhysicalCountController::class, 'finalize'])->name('finalize');
         Route::post('/{physicalCount}/cancel', [PhysicalCountController::class, 'cancel'])->name('cancel');
     });
+
+    // ── Listas de precios (Fase 10) ──────────────────────────────────────────
+    Route::apiResource('price-lists', PriceListController::class);
+    Route::put('price-lists/{priceList}/items', [PriceListController::class, 'syncItems'])->name('price-lists.items');
 
     Route::apiResource('sales', SaleController::class);
     Route::apiResource('repairs', RepairController::class);

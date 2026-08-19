@@ -7,6 +7,7 @@ use App\Traits\Auditable;
 use App\Traits\HasOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -52,6 +53,11 @@ class Client extends Model
     public function getDisplayNameAttribute(): string
     {
         return $this->business_name ?: $this->full_name;
+    }
+
+    public function priceList(): BelongsTo
+    {
+        return $this->belongsTo(PriceList::class);
     }
 
     public function sales(): HasMany

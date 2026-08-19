@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\InventoryController;
 use App\Http\Controllers\Web\PhysicalCountController;
+use App\Http\Controllers\Web\PriceListController;
 use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\RepairController;
 use App\Http\Controllers\Web\SaleController;
@@ -162,6 +163,18 @@ Route::middleware(['auth', \App\Http\Middleware\DemoMiddleware::class])->group(f
         Route::post('/{physicalCount}/guardar', [PhysicalCountController::class, 'save'])->name('physical-count.save');
         Route::post('/{physicalCount}/finalizar', [PhysicalCountController::class, 'finalize'])->name('physical-count.finalize');
         Route::post('/{physicalCount}/cancelar', [PhysicalCountController::class, 'cancel'])->name('physical-count.cancel');
+    })->middleware(['feature:catalog', 'role:owner,manager']);
+
+    // ── Listas de precios (Fase 10) ──────────────────────────────────────────
+    Route::prefix('listas-de-precios')->group(function () {
+        Route::get('/', [PriceListController::class, 'index'])->name('price-list.index');
+        Route::get('/crear', [PriceListController::class, 'create'])->name('price-list.create');
+        Route::post('/', [PriceListController::class, 'store'])->name('price-list.store');
+        Route::get('/{priceList}', [PriceListController::class, 'show'])->name('price-list.show');
+        Route::get('/{priceList}/editar', [PriceListController::class, 'edit'])->name('price-list.edit');
+        Route::put('/{priceList}', [PriceListController::class, 'update'])->name('price-list.update');
+        Route::delete('/{priceList}', [PriceListController::class, 'destroy'])->name('price-list.destroy');
+        Route::post('/{priceList}/items', [PriceListController::class, 'setItem'])->name('price-list.items.set');
     })->middleware(['feature:catalog', 'role:owner,manager']);
 
     Route::get('/suscripcion', [\App\Http\Controllers\Web\SubscriptionController::class, 'index'])->name('subscription.index')->middleware('role:owner,manager');

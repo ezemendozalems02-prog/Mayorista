@@ -151,6 +151,20 @@
                             class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold">
                     </div>
 
+                    <!-- Price List -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label
+                            class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Lista de Precios</label>
+                        <select name="price_list_id"
+                            class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold">
+                            <option value="">— Sin lista (precio {{ old('client_type', 'retail') == 'wholesale' ? 'mayorista' : 'minorista' }} estándar) —</option>
+                            @foreach($priceLists as $priceList)
+                                <option value="{{ $priceList->id }}" {{ old('price_list_id') == $priceList->id ? 'selected' : '' }}>{{ $priceList->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('price_list_id') <p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p> @enderror
+                    </div>
+
                     <!-- Notes -->
                     <div class="md:col-span-2 space-y-2">
                         <label

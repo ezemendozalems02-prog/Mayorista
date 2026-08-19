@@ -48,6 +48,7 @@ class ClientController extends Controller
             'address' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
+            'price_list_id' => ['nullable', Rule::exists('price_lists', 'id')->where('organization_id', Auth::user()->organization_id)],
             'notes' => 'nullable|string',
         ]);
 
@@ -77,6 +78,7 @@ class ClientController extends Controller
             'address' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
+            'price_list_id' => ['nullable', Rule::exists('price_lists', 'id')->where('organization_id', Auth::user()->organization_id)],
             'notes' => 'nullable|string',
         ]);
 

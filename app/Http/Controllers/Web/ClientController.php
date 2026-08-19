@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\PriceList;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
@@ -40,7 +41,9 @@ class ClientController extends Controller
 
     public function create()
     {
-        return view('clients.create');
+        $priceLists = PriceList::where('is_active', true)->orderBy('name')->get();
+
+        return view('clients.create', compact('priceLists'));
     }
 
     public function store(Request $request)
@@ -63,6 +66,7 @@ class ClientController extends Controller
             'address' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
+            'price_list_id' => ['nullable', Rule::exists('price_lists', 'id')->where('organization_id', $orgId)],
             'notes' => 'nullable|string',
         ]);
 
@@ -117,7 +121,9 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
-        return view('clients.edit', compact('client'));
+        $priceLists = PriceList::where('is_active', true)->orderBy('name')->get();
+
+        return view('clients.edit', compact('client', 'priceLists'));
     }
 
     public function update(Request $request, Client $client)
@@ -142,6 +148,7 @@ class ClientController extends Controller
             'address' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
+            'price_list_id' => ['nullable', Rule::exists('price_lists', 'id')->where('organization_id', $orgId)],
             'notes' => 'nullable|string',
         ]);
 
