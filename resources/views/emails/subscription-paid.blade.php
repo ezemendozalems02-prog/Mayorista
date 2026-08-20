@@ -41,7 +41,7 @@
                 </div>
                 <div class="stat-card" style="flex: 1;">
                     <div class="stat-label">Monto (USD/ARS)</div>
-                    <div class="stat-value">$ {{ number_format($amount ?: $plan->effective_price, 2) }}</div>
+                    <div class="stat-value">$ {{ number_format($amount ?: $plan->effective_price, 2, ',', '.') }}</div>
                 </div>
             </div>
 

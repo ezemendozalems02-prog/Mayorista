@@ -55,7 +55,7 @@
     <div class="w-full max-w-md mx-auto">
 
         <!-- Logo Area -->
-        <div class="flex flex-col items-center mb-6 md:mb-8 text-center px-4">
+        <div class="flex flex-col items-center mb-8 md:mb-10 text-center px-4">
             @if(config('platform.mode') === 'single_license')
                 <h1 class="text-4xl md:text-5xl font-black italic text-violet-gradient tracking-tighter uppercase px-4 leading-tight">
                     {{ config('app.name') }}
@@ -64,6 +64,7 @@
                 <img src="{{ asset(config('platform.brand.logo_white')) }}" alt="{{ config('platform.brand.name') }}"
                     class="h-24 md:h-36 w-auto object-contain mb-0 hover:scale-105 transition-transform duration-300">
             @endif
+            <p class="mt-3 text-xs md:text-sm font-bold text-gray-400 tracking-tight">Ingresá con tu cuenta para gestionar el negocio</p>
         </div>
 
         <!-- Login Card -->
@@ -133,24 +134,6 @@
                     </button>
                 </div>
             </form>
-
-            <div class="mt-8 pt-8 border-t border-white/5 text-center">
-                <p class="text-xs font-bold text-gray-400 tracking-tight">¿No tenés una cuenta? <a
-                        href="{{ route('register') }}" class="text-primary hover:underline">Registrá tu negocio
-                        ahora</a></p>
-
-                <div class="mt-6 flex justify-center gap-4">
-                    <button
-                        class="p-3 bg-dark rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-blue-500/10"><i
-                            data-lucide="smartphone" class="w-5 h-5 text-gray-400 hover:text-primary"></i></button>
-                    <button
-                        class="p-3 bg-dark rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-blue-500/10"><i
-                            data-lucide="monitor" class="w-5 h-5 text-gray-400 hover:text-primary"></i></button>
-                    <button
-                        class="p-3 bg-dark rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-blue-500/10"><i
-                            data-lucide="tablet" class="w-5 h-5 text-gray-400 hover:text-primary"></i></button>
-                </div>
-            </div>
 
         </div>
 

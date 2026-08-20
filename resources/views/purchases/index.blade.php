@@ -74,7 +74,7 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-6 text-sm font-black text-gray-700 dark:text-gray-200 italic hidden sm:table-cell">
-                                    ${{ number_format($purchase->total, 2) }}
+                                    ${{ number_format($purchase->total, 2, ',', '.') }}
                                 </td>
                                 <td class="px-8 py-6">
                                     <span class="text-[10px] font-black uppercase px-3 py-1 rounded-full {{ $statusColors[$statusValue] ?? '' }}">

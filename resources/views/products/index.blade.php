@@ -82,13 +82,13 @@
                                     {{ $product->category->name ?? '—' }} / {{ $product->brand->name ?? '—' }}
                                 </td>
                                 <td class="px-8 py-6 text-xs font-bold text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                                    ${{ number_format($product->cost, 2) }}
+                                    ${{ number_format($product->cost, 2, ',', '.') }}
                                 </td>
                                 <td class="px-8 py-6 text-sm font-black text-gray-700 dark:text-gray-200 italic hidden sm:table-cell">
-                                    {{ $product->retail_price !== null ? '$' . number_format($product->retail_price, 2) : '—' }}
+                                    {{ $product->retail_price !== null ? '$' . number_format($product->retail_price, 2, ',', '.') : '—' }}
                                 </td>
                                 <td class="px-8 py-6 text-sm font-black text-gray-700 dark:text-gray-200 italic hidden sm:table-cell">
-                                    {{ $product->wholesale_price !== null ? '$' . number_format($product->wholesale_price, 2) : '—' }}
+                                    {{ $product->wholesale_price !== null ? '$' . number_format($product->wholesale_price, 2, ',', '.') : '—' }}
                                 </td>
                                 <td class="px-8 py-6">
                                     @php

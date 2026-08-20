@@ -58,7 +58,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Ventas del Mes</p>
-                    <h3 class="text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">${{ number_format($stats['sales_month'], 0) }}</h3>
+                    <h3 class="text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">${{ number_format($stats['sales_month'], 0, ',', '.') }}</h3>
                     <p class="text-[10px] text-emerald-500 font-black uppercase tracking-tighter mt-1">Este mes</p>
                 </div>
                 <div class="p-3 bg-emerald-500/10 rounded-2xl">
@@ -155,7 +155,7 @@
                                     {{ $item->status->value }}
                                 </span>
                             </td>
-                            <td class="px-8 py-4 text-sm font-black text-indigo-600">${{ number_format($item->sale_price, 2) }}</td>
+                            <td class="px-8 py-4 text-sm font-black text-indigo-600">${{ number_format($item->sale_price, 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

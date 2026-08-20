@@ -155,7 +155,7 @@
                                 <td class="px-8 py-6">
                                     <div class="text-left">
                                         <p class="text-lg font-black text-violet-gradient tracking-tighter">$
-                                            {{ number_format($firstItem->sale_price, 2) }}
+                                            {{ number_format($firstItem->sale_price, 2, ',', '.') }}
                                         </p>
                                     </div>
                                 </td>
@@ -235,7 +235,7 @@
                                                             Coste
                                                         </p>
                                                         <p class="text-xs font-black text-gray-900 dark:text-gray-100">
-                                                            ${{ number_format($item->purchase_price, 2) }}
+                                                            ${{ number_format($item->purchase_price, 2, ',', '.') }}
                                                         </p>
                                                     </div>
                                                 </div>

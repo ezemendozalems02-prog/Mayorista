@@ -66,7 +66,7 @@
                             <p class="text-sm font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">{{ $org->users_count }}</p>
                         </td>
                         <td class="px-8 py-6 text-center">
-                            <p class="text-sm font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($org->sales_sum_total ?? 0, 0) }}</p>
+                            <p class="text-sm font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($org->sales_sum_total ?? 0, 0, ',', '.') }}</p>
                         </td>
                         <td class="px-8 py-6 text-center">
                             <span class="text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-widest {{ $org->is_active ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-600' }}">

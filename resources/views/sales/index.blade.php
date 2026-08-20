@@ -107,7 +107,7 @@
                                 <td class="px-8 py-6">
                                     <div class="text-left">
                                         <p class="text-lg font-black text-emerald-600 tracking-tighter">
-                                            {{ $sale->currency }} {{ number_format($sale->total, 2) }}
+                                            {{ $sale->currency }} {{ number_format($sale->total, 2, ',', '.') }}
                                         </p>
                                         <div class="flex items-center gap-1">
                                             <span class="text-[8px] font-black uppercase text-gray-400 tracking-widest">{{ $sale->seller->name ?? 'Sistema' }}</span>

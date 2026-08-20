@@ -74,7 +74,7 @@
             <div class="relative z-10">
                 <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic mb-1">Ventas Totales</p>
                 <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">
-                    USD {{ number_format($totalSales, 2) }}
+                    USD {{ number_format($totalSales, 2, ',', '.') }}
                 </h3>
                 <div class="mt-3 flex items-center gap-1.5 text-emerald-500">
                     <i data-lucide="trending-up" class="w-3 h-3"></i>
@@ -88,7 +88,7 @@
         <div class="bg-violet-600 p-6 rounded-[32px] text-white shadow-2xl shadow-violet-500/25 relative overflow-hidden group">
             <div class="relative z-10">
                 <p class="text-[9px] font-black uppercase tracking-widest italic opacity-60 mb-1">Utilidad Neta</p>
-                <h3 class="text-2xl font-black italic tracking-tighter">USD {{ number_format($totalProfit, 2) }}</h3>
+                <h3 class="text-2xl font-black italic tracking-tighter">USD {{ number_format($totalProfit, 2, ',', '.') }}</h3>
                 <div class="mt-3">
                     <div class="flex justify-between mb-1">
                         <span class="text-[9px] opacity-60 font-bold">Margen</span>
@@ -107,7 +107,7 @@
             <div class="relative z-10">
                 <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic mb-1">Ticket Promedio</p>
                 <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">
-                    USD {{ number_format($avgTicket, 2) }}
+                    USD {{ number_format($avgTicket, 2, ',', '.') }}
                 </h3>
                 <p class="text-[9px] font-bold text-gray-400 uppercase mt-3">Por venta</p>
             </div>
@@ -119,7 +119,7 @@
             <div class="relative z-10">
                 <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic mb-1">Compras a Proveedores</p>
                 <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">
-                    USD {{ number_format($purchasesTotal, 2) }}
+                    USD {{ number_format($purchasesTotal, 2, ',', '.') }}
                 </h3>
                 <p class="text-[9px] font-bold text-gray-400 uppercase mt-3">{{ $purchasesCount }} recibidas</p>
             </div>
@@ -153,11 +153,11 @@
         <div class="col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-[32px] text-white shadow-2xl shadow-slate-900/20 relative overflow-hidden group">
             <div class="relative z-10">
                 <p class="text-[9px] font-black uppercase tracking-widest italic opacity-50 mb-1">Valor Venta Stock</p>
-                <h3 class="text-3xl font-black italic tracking-tighter text-emerald-400">USD {{ number_format($stockValue, 2) }}</h3>
+                <h3 class="text-3xl font-black italic tracking-tighter text-emerald-400">USD {{ number_format($stockValue, 2, ',', '.') }}</h3>
                 
                 <div class="mt-4 pt-4 border-t border-white/5">
                     <p class="text-[9px] font-black uppercase tracking-widest italic opacity-50 mb-1">Inversión Total (Costo)</p>
-                    <p class="text-xl font-black italic tracking-tighter text-gray-300">USD {{ number_format($stockCost, 2) }}</p>
+                    <p class="text-xl font-black italic tracking-tighter text-gray-300">USD {{ number_format($stockCost, 2, ',', '.') }}</p>
                 </div>
             </div>
             <i data-lucide="layers" class="absolute -right-4 -bottom-4 w-28 h-28 text-white/5 group-hover:rotate-6 transition-transform duration-300"></i>
@@ -225,7 +225,7 @@
                                 <span class="text-xs font-black dark:text-gray-200 truncate max-w-[140px]">{{ $branch->branch_name }}</span>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs font-black dark:text-gray-100">USD {{ number_format($branch->total, 2) }}</span>
+                                <span class="text-xs font-black dark:text-gray-100">USD {{ number_format($branch->total, 2, ',', '.') }}</span>
                                 <span class="text-[9px] text-gray-400 ml-1">({{ $branch->count }} vtas)</span>
                             </div>
                         </div>
@@ -242,7 +242,7 @@
                     </div>
                     <div class="bg-violet-500/5 rounded-2xl p-3 text-center">
                         <p class="text-[9px] text-gray-400 font-black uppercase">Total general</p>
-                        <p class="text-xl font-black text-gray-900 dark:text-gray-100 mt-0.5">{{ number_format($salesByBranch->sum('count')) }}</p>
+                        <p class="text-xl font-black text-gray-900 dark:text-gray-100 mt-0.5">{{ number_format($salesByBranch->sum('count'), 0, ',', '.') }}</p>
                     </div>
                 </div>
             @endif
@@ -276,7 +276,7 @@
                             </div>
                         </div>
                         <div class="text-right shrink-0">
-                            <p class="text-xs font-black dark:text-gray-100">USD {{ number_format($seller->total, 0) }}</p>
+                            <p class="text-xs font-black dark:text-gray-100">USD {{ number_format($seller->total, 0, ',', '.') }}</p>
                             <p class="text-[9px] text-gray-400">{{ $seller->count }} vtas</p>
                         </div>
                     </div>
@@ -327,7 +327,7 @@
                                     <span class="text-xs font-black text-orange-500">× {{ $product->total_qty }}</span>
                                 </td>
                                 <td class="py-3 text-right">
-                                    <span class="text-xs font-black dark:text-gray-100">USD {{ number_format($product->total_revenue, 0) }}</span>
+                                    <span class="text-xs font-black dark:text-gray-100">USD {{ number_format($product->total_revenue, 0, ',', '.') }}</span>
                                 </td>
                             </tr>
                             @endforeach
@@ -367,7 +367,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-[9px] text-gray-400">{{ $pct }}%</span>
-                            <span class="text-[10px] font-black dark:text-gray-100">USD {{ number_format($pm->total, 0) }}</span>
+                            <span class="text-[10px] font-black dark:text-gray-100">USD {{ number_format($pm->total, 0, ',', '.') }}</span>
                         </div>
                     </div>
                     @endforeach
@@ -406,7 +406,7 @@
                                     <p class="text-[9px] text-gray-400">{{ $supplier->count }} compras</p>
                                 </div>
                             </div>
-                            <p class="text-xs font-black dark:text-gray-100">USD {{ number_format($supplier->total, 0) }}</p>
+                            <p class="text-xs font-black dark:text-gray-100">USD {{ number_format($supplier->total, 0, ',', '.') }}</p>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-dark-alt h-1.5 rounded-full overflow-hidden">
                             <div class="bg-blue-400 h-full rounded-full transition-all duration-700" style="width: {{ $pct }}%"></div>
@@ -422,7 +422,7 @@
             <h3 class="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest italic flex items-center gap-2 mb-2">
                 <i data-lucide="wallet" class="w-5 h-5 text-red-500"></i> Cuentas por Cobrar
             </h3>
-            <p class="text-2xl font-black italic tracking-tighter text-red-500 mb-5">USD {{ number_format($totalReceivable, 2) }}</p>
+            <p class="text-2xl font-black italic tracking-tighter text-red-500 mb-5">USD {{ number_format($totalReceivable, 2, ',', '.') }}</p>
             @if($topDebtors->isEmpty())
                 <div class="flex flex-col items-center justify-center py-10 text-gray-300 dark:text-gray-600">
                     <i data-lucide="check-circle" class="w-10 h-10 mb-2"></i>
@@ -433,7 +433,7 @@
                     @foreach($topDebtors as $debtor)
                     <div class="flex items-center justify-between p-3 rounded-2xl bg-gray-50 dark:bg-dark">
                         <span class="text-xs font-black dark:text-gray-200 truncate max-w-[160px]">{{ $debtor->client_name }}</span>
-                        <span class="text-xs font-black text-red-500">USD {{ number_format($debtor->balance, 2) }}</span>
+                        <span class="text-xs font-black text-red-500">USD {{ number_format($debtor->balance, 2, ',', '.') }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -471,7 +471,7 @@
                             <p class="text-xs font-black dark:text-gray-200 truncate">{{ $client->client_name }}</p>
                             <p class="text-[9px] text-gray-400">{{ $client->count }} compras</p>
                         </div>
-                        <span class="text-xs font-black dark:text-gray-100 shrink-0">USD {{ number_format($client->total, 0) }}</span>
+                        <span class="text-xs font-black dark:text-gray-100 shrink-0">USD {{ number_format($client->total, 0, ',', '.') }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -517,7 +517,7 @@
                                     <span class="text-[9px] text-gray-500 dark:text-gray-400 font-bold">{{ $sale->seller_name }}</span>
                                 </td>
                                 <td class="py-2.5 text-right">
-                                    <span class="text-[10px] font-black text-gray-900 dark:text-gray-100">USD {{ number_format($sale->total, 2) }}</span>
+                                    <span class="text-[10px] font-black text-gray-900 dark:text-gray-100">USD {{ number_format($sale->total, 2, ',', '.') }}</span>
                                 </td>
                             </tr>
                             @endforeach

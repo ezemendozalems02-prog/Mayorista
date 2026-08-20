@@ -42,7 +42,7 @@
                     <i data-lucide="wallet" class="w-4 h-4 text-primary"></i> Cuenta Corriente
                     @php $balance = $client->current_balance; @endphp
                     @if($balance != 0)
-                        <span class="{{ $balance > 0 ? 'text-red-500' : 'text-emerald-600' }}">${{ number_format(abs($balance), 2) }}</span>
+                        <span class="{{ $balance > 0 ? 'text-red-500' : 'text-emerald-600' }}">${{ number_format(abs($balance), 2, ',', '.') }}</span>
                     @endif
                 </a>
                 <a href="{{ route('client.edit', $client) }}"
@@ -138,7 +138,7 @@
                             </div>
                             <div>
                                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Límite de Crédito</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100">${{ number_format($client->credit_limit, 2) }}</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-gray-100">${{ number_format($client->credit_limit, 2, ',', '.') }}</p>
                             </div>
                         </div>
                         @endif
@@ -153,13 +153,13 @@
                     <div>
                         <p class="text-xs font-bold opacity-80 uppercase tracking-widest">Total Invertido</p>
                         <p class="text-4xl font-black italic tracking-tighter mt-1">USD
-                            {{ number_format($client->sales->sum('total'), 2) }}</p>
+                            {{ number_format($client->sales->sum('total'), 2, ',', '.') }}</p>
                     </div>
                     <div class="pt-6 border-t border-white/10 flex justify-between items-center">
                         <div>
                             <p class="text-[10px] font-black uppercase opacity-60">Ticket Promedio</p>
                             <p class="text-lg font-black italic">USD
-                                {{ $client->sales->count() > 0 ? number_format($client->sales->sum('total') / $client->sales->count(), 2) : '0.00' }}
+                                {{ $client->sales->count() > 0 ? number_format($client->sales->sum('total') / $client->sales->count(), 2, ',', '.') : '0.00' }}
                             </p>
                         </div>
                         <div class="text-right">
@@ -215,7 +215,7 @@
                                         </td>
                                         <td class="px-8 py-6 text-right">
                                             <span class="text-sm font-black text-emerald-600 italic">
-                                                {{ $sale->currency }} {{ number_format($sale->total, 2) }}
+                                                {{ $sale->currency }} {{ number_format($sale->total, 2, ',', '.') }}
                                             </span>
                                         </td>
                                     </tr>

@@ -41,9 +41,9 @@
             <p class="text-[10px] font-black uppercase tracking-[0.2em] italic opacity-70">
                 {{ $balance > 0 ? 'Saldo Deudor' : ($balance < 0 ? 'Saldo a Favor' : 'Cuenta al Día') }}
             </p>
-            <p class="text-4xl font-black italic tracking-tighter mt-1">${{ number_format(abs($balance), 2) }}</p>
+            <p class="text-4xl font-black italic tracking-tighter mt-1">${{ number_format(abs($balance), 2, ',', '.') }}</p>
             @if($client->credit_limit)
-                <p class="text-xs font-bold opacity-70 mt-3">Límite de crédito: ${{ number_format($client->credit_limit, 2) }}</p>
+                <p class="text-xs font-bold opacity-70 mt-3">Límite de crédito: ${{ number_format($client->credit_limit, 2, ',', '.') }}</p>
             @endif
         </div>
 
@@ -111,7 +111,7 @@
                                 </td>
                                 <td class="px-8 py-5">
                                     <span class="text-xs font-black {{ $movement->amount >= 0 ? 'text-red-500' : 'text-emerald-600' }}">
-                                        {{ $movement->amount >= 0 ? '+' : '' }}${{ number_format($movement->amount, 2) }}
+                                        {{ $movement->amount >= 0 ? '+' : '' }}${{ number_format($movement->amount, 2, ',', '.') }}
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 hidden md:table-cell">

@@ -39,7 +39,7 @@
                 <div class="space-y-6">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-black uppercase text-gray-400">Facturación Total</span>
-                        <span class="text-lg font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($stats['total_revenue'], 2) }}</span>
+                        <span class="text-lg font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($stats['total_revenue'], 2, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-black uppercase text-gray-400">Ventas Realizadas</span>

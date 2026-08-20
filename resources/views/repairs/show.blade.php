@@ -134,17 +134,17 @@
                         <div>
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Costo Estimado</p>
                             <p class="text-xl font-black text-gray-900 dark:text-gray-100 italic">USD
-                                {{ number_format($repair->estimated_cost, 2) }}</p>
+                                {{ number_format($repair->estimated_cost, 2, ',', '.') }}</p>
                         </div>
                         <div>
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Seña / Adelanto</p>
                             <p class="text-xl font-black text-emerald-500 italic">USD
-                                {{ number_format($repair->deposit_amount, 2) }}</p>
+                                {{ number_format($repair->deposit_amount, 2, ',', '.') }}</p>
                         </div>
                         <div class="md:text-right">
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Presupuesto Final</p>
                             <p class="text-2xl font-black text-orange-600 italic">USD
-                                {{ number_format($repair->final_cost ?? $repair->estimated_cost, 2) }}</p>
+                                {{ number_format($repair->final_cost ?? $repair->estimated_cost, 2, ',', '.') }}</p>
                         </div>
                     </div>
                 </div>

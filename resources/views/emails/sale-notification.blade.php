@@ -51,7 +51,7 @@
                     @foreach($sale->items as $item)
                     <tr>
                         <td class="item-name">{{ $item->item_name }} (x{{ $item->quantity }})</td>
-                        <td style="text-align: right; font-weight: 700; font-size: 14px;">{{ $sale->currency }} ${{ number_format($item->line_total, 2) }}</td>
+                        <td style="text-align: right; font-weight: 700; font-size: 14px;">{{ $sale->currency }} ${{ number_format($item->line_total, 2, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -61,12 +61,12 @@
                 <table style="width: 100%;">
                     <tr>
                         <td style="font-size: 14px; font-weight: 600; color: #666;">Subtotal</td>
-                        <td style="text-align: right; font-size: 14px; font-weight: 600; color: #666;">{{ $sale->currency }} ${{ number_format($sale->subtotal, 2) }}</td>
+                        <td style="text-align: right; font-size: 14px; font-weight: 600; color: #666;">{{ $sale->currency }} ${{ number_format($sale->subtotal, 2, ',', '.') }}</td>
                     </tr>
                     @if($sale->discount > 0)
                     <tr>
                         <td style="font-size: 14px; font-weight: 600; color: #666; padding-top: 5px;">Descuento</td>
-                        <td style="text-align: right; font-size: 14px; font-weight: 600; color: #ef4444; padding-top: 5px;">- {{ $sale->currency }} ${{ number_format($sale->discount, 2) }}</td>
+                        <td style="text-align: right; font-size: 14px; font-weight: 600; color: #ef4444; padding-top: 5px;">- {{ $sale->currency }} ${{ number_format($sale->discount, 2, ',', '.') }}</td>
                     </tr>
                     @endif
                     <tr>
@@ -76,7 +76,7 @@
                     <tr>
                         <td style="border-top: 2px solid #e5e7eb; padding-top: 15px; font-weight: 900; color: #333; font-size: 18px; text-transform: uppercase; font-style: italic;">Total de Venta</td>
                         <td style="border-top: 2px solid #e5e7eb; padding-top: 15px; text-align: right; font-weight: 900; color: #6366f1; font-size: 22px; font-style: italic;">
-                            {{ $sale->currency }} ${{ number_format($sale->total, 2) }}
+                            {{ $sale->currency }} ${{ number_format($sale->total, 2, ',', '.') }}
                         </td>
                     </tr>
                 </table>

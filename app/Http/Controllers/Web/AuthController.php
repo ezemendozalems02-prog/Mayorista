@@ -40,6 +40,12 @@ class AuthController extends Controller
 
     public function showRegister()
     {
+        // El registro publico solo tiene sentido en modo SaaS (cada quien
+        // crea su propia organizacion). En single_license (este despliegue,
+        // una sola empresa) no debe existir una puerta para que cualquiera
+        // se cree una cuenta nueva.
+        abort_if(config('platform.mode') === 'single_license', 404);
+
         if (Auth::check() && !Auth::user()->is_demo) {
             return redirect()->route('dashboard');
         }
@@ -48,6 +54,8 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        abort_if(config('platform.mode') === 'single_license', 404);
+
         $request->validate([
             'organization_name' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],

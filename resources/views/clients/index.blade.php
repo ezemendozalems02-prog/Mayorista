@@ -118,13 +118,13 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-6 text-sm font-black text-gray-700 dark:text-gray-200 italic hidden sm:table-cell">
-                                    ${{ number_format($client->sales_sum_total ?? 0, 2) }}
+                                    ${{ number_format($client->sales_sum_total ?? 0, 2, ',', '.') }}
                                 </td>
                                 <td class="px-8 py-6 hidden lg:table-cell">
                                     @php $balance = $client->account_movements_sum_amount ?? 0; @endphp
                                     @if($balance != 0)
                                         <a href="{{ route('client.account', $client) }}" class="text-sm font-black italic {{ $balance > 0 ? 'text-red-500' : 'text-emerald-600' }} hover:underline">
-                                            ${{ number_format(abs($balance), 2) }}
+                                            ${{ number_format(abs($balance), 2, ',', '.') }}
                                         </a>
                                     @else
                                         <span class="text-xs text-gray-300 italic">Al día</span>

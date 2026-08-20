@@ -67,8 +67,8 @@
                                     <p class="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tighter italic">{{ $item->product->internal_code }}</p>
                                 </td>
                                 <td class="px-8 py-6 text-center text-sm font-bold text-gray-600 dark:text-gray-400">{{ $item->quantity }}</td>
-                                <td class="px-8 py-6 text-right text-sm font-bold text-gray-600 dark:text-gray-400">${{ number_format($item->unit_cost, 2) }}</td>
-                                <td class="px-8 py-6 text-right text-sm font-black text-primary italic">${{ number_format($item->line_total, 2) }}</td>
+                                <td class="px-8 py-6 text-right text-sm font-bold text-gray-600 dark:text-gray-400">${{ number_format($item->unit_cost, 2, ',', '.') }}</td>
+                                <td class="px-8 py-6 text-right text-sm font-black text-primary italic">${{ number_format($item->line_total, 2, ',', '.') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -76,14 +76,14 @@
             </div>
             <div class="p-8 bg-gray-50/30 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 space-y-2">
                 <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    <span>Subtotal</span><span>${{ number_format($purchase->subtotal, 2) }}</span>
+                    <span>Subtotal</span><span>${{ number_format($purchase->subtotal, 2, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    <span>Descuento</span><span>- ${{ number_format($purchase->discount, 2) }}</span>
+                    <span>Descuento</span><span>- ${{ number_format($purchase->discount, 2, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-white/10">
                     <span class="text-xs font-black uppercase italic">Total</span>
-                    <span class="text-xl font-black text-primary italic">${{ number_format($purchase->total, 2) }}</span>
+                    <span class="text-xl font-black text-primary italic">${{ number_format($purchase->total, 2, ',', '.') }}</span>
                 </div>
             </div>
         </div>

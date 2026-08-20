@@ -81,10 +81,10 @@
                                         </td>
                                         <td
                                             class="px-8 py-6 text-right text-sm font-black text-gray-700 dark:text-gray-300 tracking-tight">
-                                            {{ $sale->currency }} {{ number_format($item->unit_price, 2) }}
+                                            {{ $sale->currency }} {{ number_format($item->unit_price, 2, ',', '.') }}
                                         </td>
                                         <td class="px-8 py-6 text-right text-base font-black text-emerald-600 tracking-tighter">
-                                            {{ $sale->currency }} {{ number_format($item->line_total, 2) }}
+                                            {{ $sale->currency }} {{ number_format($item->line_total, 2, ',', '.') }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -98,19 +98,19 @@
                             <div
                                 class="flex justify-between w-full max-w-xs text-sm font-bold text-gray-400 uppercase tracking-widest italic">
                                 <span>Subtotal:</span>
-                                <span>{{ $sale->currency }} {{ number_format($sale->subtotal, 2) }}</span>
+                                <span>{{ $sale->currency }} {{ number_format($sale->subtotal, 2, ',', '.') }}</span>
                             </div>
                             <div
                                 class="flex justify-between w-full max-w-xs text-sm font-bold text-red-500 uppercase tracking-widest italic">
                                 <span>Descuento:</span>
-                                <span>- {{ $sale->currency }} {{ number_format($sale->discount, 2) }}</span>
+                                <span>- {{ $sale->currency }} {{ number_format($sale->discount, 2, ',', '.') }}</span>
                             </div>
                             <div
                                 class="pt-4 border-t border-gray-200 dark:border-white/10 flex justify-between w-full max-w-xs">
                                 <span
                                     class="text-lg font-black text-gray-900 dark:text-gray-100 uppercase italic tracking-tighter">Total:</span>
                                 <span class="text-3xl font-black text-emerald-600 tracking-tighter leading-none">
-                                    {{ $sale->currency }} {{ number_format($sale->total, 2) }}
+                                    {{ $sale->currency }} {{ number_format($sale->total, 2, ',', '.') }}
                                 </span>
                             </div>
                         </div>
@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="text-right">
                                     <p class="font-black text-lg text-emerald-600 tracking-tighter">{{ $payment->currency }}
-                                        {{ number_format($payment->amount, 2) }}</p>
+                                        {{ number_format($payment->amount, 2, ',', '.') }}</p>
                                     <span
                                         class="text-[8px] bg-emerald-500/10 text-emerald-600 px-2 py-0.5 rounded-full font-black uppercase tracking-widest border border-emerald-500/20">Pago
                                         Exitoso</span>

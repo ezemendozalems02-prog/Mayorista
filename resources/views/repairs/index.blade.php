@@ -123,7 +123,7 @@
                                             {{ $repair->reported_issue }}
                                         </p>
                                         <p class="text-[10px] text-orange-500 font-bold uppercase tracking-widest mt-1">
-                                            Estimado: ${{ number_format($repair->estimated_cost, 2) }}</p>
+                                            Estimado: ${{ number_format($repair->estimated_cost, 2, ',', '.') }}</p>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 hidden md:table-cell">

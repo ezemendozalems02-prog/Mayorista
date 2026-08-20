@@ -84,7 +84,7 @@
                                 </td>
                                 <td class="px-8 py-6">
                                     <p class="text-sm font-black text-indigo-600 italic">
-                                        {{ $tradeIn->currency }} {{ number_format($tradeIn->appraised_value, 2) }}
+                                        {{ $tradeIn->currency }} {{ number_format($tradeIn->appraised_value, 2, ',', '.') }}
                                     </p>
                                 </td>
                                 <td class="px-8 py-6 text-right text-xs font-bold text-gray-400 italic">

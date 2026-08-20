@@ -41,7 +41,7 @@
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Ventas del Mes</p>
                         <h3 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">
-                            ${{ number_format($metrics['sales_month'], 2) }}</h3>
+                            ${{ number_format($metrics['sales_month'], 2, ',', '.') }}</h3>
                         @if($metrics['sales_growth_percent'] !== null)
                             <p class="text-[10px] mt-2 flex items-center {{ $metrics['sales_growth_percent'] >= 0 ? 'text-emerald-500' : 'text-red-500' }} font-black tracking-tight uppercase">
                                 <i data-lucide="{{ $metrics['sales_growth_percent'] >= 0 ? 'trending-up' : 'trending-down' }}" class="w-3 h-3 mr-1"></i>
@@ -67,7 +67,7 @@
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Ganancia Neta</p>
                         <h3 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">
-                            ${{ number_format($metrics['profit_month'], 2) }}</h3>
+                            ${{ number_format($metrics['profit_month'], 2, ',', '.') }}</h3>
                         <p
                             class="text-[10px] mt-2 flex items-center text-blue-500 font-black tracking-tight uppercase italic border border-blue-100 dark:border-blue-900/30 px-2 py-0.5 rounded-full w-fit">
                             Margen: {{ $metrics['margin_percent'] }}%
@@ -114,7 +114,7 @@
                         <h3 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">
                             {{ $metrics['stock_count'] }} Unidades</h3>
                         <p class="text-[10px] mt-2 flex items-center text-gray-400 font-bold uppercase tracking-tight">Valor
-                            total: ${{ number_format($metrics['stock_value'], 2) }}</p>
+                            total: ${{ number_format($metrics['stock_value'], 2, ',', '.') }}</p>
                     </div>
                     <div class="p-3 bg-indigo-500/10 rounded-2xl">
                         <i data-lucide="package" class="w-6 h-6 text-indigo-500"></i>
@@ -161,7 +161,7 @@
                             </div>
                             <div class="text-right">
                                 <p class="font-black text-lg text-emerald-600 tracking-tighter">
-                                    ${{ number_format($sale->total, 2) }}</p>
+                                    ${{ number_format($sale->total, 2, ',', '.') }}</p>
                                 <p class="text-[10px] uppercase text-gray-400 font-bold">
                                     {{ $sale->created_at->diffForHumans() }}</p>
                             </div>
@@ -215,7 +215,7 @@
                             <div class="text-right">
                                 <span
                                     class="text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest shadow-sm {{ $orderStatusColors[$orderStatusValue] ?? '' }}">{{ $orderStatusLabels[$orderStatusValue] ?? $orderStatusValue }}</span>
-                                <p class="text-[10px] mt-2 uppercase text-gray-400 font-bold">${{ number_format($order->total, 2) }}</p>
+                                <p class="text-[10px] mt-2 uppercase text-gray-400 font-bold">${{ number_format($order->total, 2, ',', '.') }}</p>
                             </div>
                         </a>
                     @empty
@@ -329,7 +329,7 @@
                             <div class="w-full flex items-end h-24">
                                 <div style="height: {{ $heightPct }}%"
                                     class="w-full rounded-t-lg {{ $day['total'] > 0 ? 'bg-gradient-to-t from-primary to-secondary' : 'bg-gray-100 dark:bg-white/5' }} transition-all group-hover/bar:opacity-80"
-                                    title="${{ number_format($day['total'], 2) }}">
+                                    title="${{ number_format($day['total'], 2, ',', '.') }}">
                                 </div>
                             </div>
                             <span class="text-[9px] font-bold uppercase text-gray-400">{{ $day['label'] }}</span>

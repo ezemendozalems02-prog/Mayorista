@@ -67,9 +67,9 @@
             <div class="bg-primary rounded-[40px] p-8 text-white shadow-2xl relative overflow-hidden">
                 <i data-lucide="landmark" class="absolute -right-4 -bottom-4 w-32 h-32 opacity-10"></i>
                 <p class="text-[10px] font-black uppercase tracking-[0.2em] italic opacity-70">Saldo Esperado en Caja</p>
-                <p class="text-4xl font-black italic tracking-tighter mt-1">${{ number_format($balance, 2) }}</p>
+                <p class="text-4xl font-black italic tracking-tighter mt-1">${{ number_format($balance, 2, ',', '.') }}</p>
                 <p class="text-xs font-bold opacity-70 mt-3">
-                    Fondo inicial: ${{ number_format($session->opening_amount, 2) }} ·
+                    Fondo inicial: ${{ number_format($session->opening_amount, 2, ',', '.') }} ·
                     Abierta el {{ $session->opened_at->format('d/m/Y H:i') }}
                 </p>
             </div>
@@ -135,7 +135,7 @@
                                     </td>
                                     <td class="px-8 py-5">
                                         <span class="text-xs font-black {{ $movement->amount >= 0 ? 'text-emerald-600' : 'text-red-500' }}">
-                                            {{ $movement->amount >= 0 ? '+' : '' }}${{ number_format($movement->amount, 2) }}
+                                            {{ $movement->amount >= 0 ? '+' : '' }}${{ number_format($movement->amount, 2, ',', '.') }}
                                         </span>
                                     </td>
                                     <td class="px-8 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 hidden md:table-cell">
@@ -163,7 +163,7 @@
             <!-- Cerrar caja -->
             <div class="bg-white dark:bg-dark-alt rounded-[40px] border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none p-8 md:p-10">
                 <h2 class="text-sm font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Cerrar Turno (Arqueo)</h2>
-                <p class="text-xs text-gray-400 mb-6">Contá el efectivo físico del cajón y cargalo acá. El sistema calcula la diferencia contra lo esperado (${{ number_format($balance, 2) }}).</p>
+                <p class="text-xs text-gray-400 mb-6">Contá el efectivo físico del cajón y cargalo acá. El sistema calcula la diferencia contra lo esperado (${{ number_format($balance, 2, ',', '.') }}).</p>
                 <form action="{{ route('cash-session.close') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
                     onsubmit="return confirm('¿Cerrar la caja? No vas a poder registrar más movimientos en este turno.');">
                     @csrf

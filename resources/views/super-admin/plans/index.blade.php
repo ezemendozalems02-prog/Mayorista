@@ -46,13 +46,13 @@
                 <div class="space-y-4 mb-10 flex-1">
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic leading-none mb-1">Precio Normal</span>
-                        <span class="text-3xl font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">USD {{ number_format($plan->price, 2) }}</span>
+                        <span class="text-3xl font-black text-gray-900 dark:text-gray-100 italic tracking-tighter">USD {{ number_format($plan->price, 2, ',', '.') }}</span>
                     </div>
 
                     @if($plan->promo_price)
                     <div class="p-4 rounded-3xl bg-emerald-500/5 border border-emerald-500/10">
                         <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic leading-none mb-1 block">Precio Promo</span>
-                        <span class="text-2xl font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($plan->promo_price, 2) }}</span>
+                        <span class="text-2xl font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($plan->promo_price, 2, ',', '.') }}</span>
                         @if($plan->promo_ends_at)
                             <p class="text-[9px] font-bold text-gray-400 mt-2 uppercase">Vence: {{ $plan->promo_ends_at->format('d/m/Y H:i') }}</p>
                         @endif

@@ -63,7 +63,7 @@
                             <p class="text-sm font-black text-gray-900 italic tracking-tight leading-snug">{{ $product->name }}</p>
                             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter mt-1">{{ $product->internal_code }}{{ $product->brand ? ' · ' . $product->brand->name : '' }}</p>
                         </div>
-                        <p class="text-xl font-black text-primary italic tracking-tighter">${{ number_format($product->retail_price ?? 0, 2) }}</p>
+                        <p class="text-xl font-black text-primary italic tracking-tighter">${{ number_format($product->retail_price ?? 0, 2, ',', '.') }}</p>
                     </div>
                 @endforeach
             </div>

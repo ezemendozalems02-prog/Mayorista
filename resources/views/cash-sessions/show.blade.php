@@ -40,20 +40,20 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-white dark:bg-dark-alt rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
                 <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Fondo Inicial</p>
-                <p class="text-xl font-black italic text-gray-800 dark:text-gray-100">${{ number_format($session->opening_amount, 2) }}</p>
+                <p class="text-xl font-black italic text-gray-800 dark:text-gray-100">${{ number_format($session->opening_amount, 2, ',', '.') }}</p>
             </div>
             <div class="bg-white dark:bg-dark-alt rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
                 <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">{{ $session->isOpen() ? 'Esperado (Ahora)' : 'Esperado al Cierre' }}</p>
-                <p class="text-xl font-black italic text-gray-800 dark:text-gray-100">${{ number_format($session->isOpen() ? $balance : $session->expected_amount, 2) }}</p>
+                <p class="text-xl font-black italic text-gray-800 dark:text-gray-100">${{ number_format($session->isOpen() ? $balance : $session->expected_amount, 2, ',', '.') }}</p>
             </div>
             @if(!$session->isOpen())
                 <div class="bg-white dark:bg-dark-alt rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
                     <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Contado</p>
-                    <p class="text-xl font-black italic text-gray-800 dark:text-gray-100">${{ number_format($session->closing_amount, 2) }}</p>
+                    <p class="text-xl font-black italic text-gray-800 dark:text-gray-100">${{ number_format($session->closing_amount, 2, ',', '.') }}</p>
                 </div>
                 <div class="{{ $session->difference == 0 ? 'bg-emerald-500' : 'bg-red-500' }} rounded-3xl p-6 shadow-sm text-white">
                     <p class="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Diferencia</p>
-                    <p class="text-xl font-black italic">{{ $session->difference > 0 ? '+' : '' }}${{ number_format($session->difference, 2) }}</p>
+                    <p class="text-xl font-black italic">{{ $session->difference > 0 ? '+' : '' }}${{ number_format($session->difference, 2, ',', '.') }}</p>
                 </div>
             @endif
         </div>
@@ -91,7 +91,7 @@
                                 </td>
                                 <td class="px-8 py-5">
                                     <span class="text-xs font-black {{ $movement->amount >= 0 ? 'text-emerald-600' : 'text-red-500' }}">
-                                        {{ $movement->amount >= 0 ? '+' : '' }}${{ number_format($movement->amount, 2) }}
+                                        {{ $movement->amount >= 0 ? '+' : '' }}${{ number_format($movement->amount, 2, ',', '.') }}
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 hidden md:table-cell">

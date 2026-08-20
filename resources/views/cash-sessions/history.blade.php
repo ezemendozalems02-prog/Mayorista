@@ -46,14 +46,14 @@
                                     @endif
                                 </td>
                                 <td class="px-8 py-6 text-sm font-black text-gray-700 dark:text-gray-200 italic hidden sm:table-cell">
-                                    ${{ number_format($session->opening_amount, 2) }}
+                                    ${{ number_format($session->opening_amount, 2, ',', '.') }}
                                 </td>
                                 <td class="px-8 py-6 hidden sm:table-cell">
                                     @if($session->difference === null)
                                         <span class="text-xs text-gray-300 italic">—</span>
                                     @else
                                         <span class="text-sm font-black italic {{ $session->difference == 0 ? 'text-emerald-600' : 'text-red-500' }}">
-                                            {{ $session->difference > 0 ? '+' : '' }}${{ number_format($session->difference, 2) }}
+                                            {{ $session->difference > 0 ? '+' : '' }}${{ number_format($session->difference, 2, ',', '.') }}
                                         </span>
                                     @endif
                                 </td>

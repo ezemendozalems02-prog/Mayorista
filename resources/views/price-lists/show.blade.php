@@ -63,9 +63,9 @@
                                     <p class="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tighter italic">{{ $product->internal_code }}</p>
                                 </td>
                                 <td class="px-8 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                                    {{ $product->retail_price !== null ? '$' . number_format($product->retail_price, 2) : '—' }}
+                                    {{ $product->retail_price !== null ? '$' . number_format($product->retail_price, 2, ',', '.') : '—' }}
                                     @if($product->wholesale_price !== null)
-                                        <span class="block text-[10px] opacity-70">May: ${{ number_format($product->wholesale_price, 2) }}</span>
+                                        <span class="block text-[10px] opacity-70">May: ${{ number_format($product->wholesale_price, 2, ',', '.') }}</span>
                                     @endif
                                 </td>
                                 <td class="px-8 py-5">

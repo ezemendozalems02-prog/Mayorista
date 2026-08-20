@@ -60,7 +60,7 @@
                             {{ $affiliate->referrals_count }}
                         </td>
                         <td class="px-8 py-6 text-center font-black text-emerald-500 italic">
-                            $ {{ number_format($affiliate->balance, 2) }}
+                            $ {{ number_format($affiliate->balance, 2, ',', '.') }}
                         </td>
                         <td class="px-8 py-6 text-center">
                              <span class="text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-widest {{ $affiliate->is_active ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-600' }}">

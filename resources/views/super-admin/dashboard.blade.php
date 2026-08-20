@@ -35,8 +35,8 @@
 
         <div class="bg-violet-600 p-8 rounded-[40px] text-white shadow-2xl shadow-violet-500/20 relative overflow-hidden group">
             <h3 class="text-[10px] font-black uppercase tracking-widest italic opacity-60 mb-1">Facturación Global</h3>
-            <p class="text-3xl font-black italic tracking-tighter leading-none">USD {{ number_format($stats['total_revenue'], 2) }}</p>
-            <p class="mt-4 text-[10px] font-bold opacity-60 uppercase">{{ number_format($stats['total_sales']) }} ventas totales</p>
+            <p class="text-3xl font-black italic tracking-tighter leading-none">USD {{ number_format($stats['total_revenue'], 2, ',', '.') }}</p>
+            <p class="mt-4 text-[10px] font-bold opacity-60 uppercase">{{ number_format($stats['total_sales'], 0, ',', '.') }} ventas totales</p>
             <i data-lucide="dollar-sign" class="absolute -right-4 -bottom-4 w-24 h-24 text-white/10 group-hover:rotate-12 transition-transform"></i>
         </div>
 
@@ -97,7 +97,7 @@
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-black dark:text-gray-100 italic">{{ $org->name }}</span>
-                        <span class="text-xs font-black text-emerald-600">USD {{ number_format($org->total, 0) }}</span>
+                        <span class="text-xs font-black text-emerald-600">USD {{ number_format($org->total, 0, ',', '.') }}</span>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-white/5 h-2 rounded-full overflow-hidden">
                         @php $pct = ($stats['total_revenue'] > 0) ? ($org->total / $stats['total_revenue'] * 100) : 0; @endphp

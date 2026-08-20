@@ -44,7 +44,7 @@
                             </p>
                         </td>
                         <td class="px-8 py-6 text-center">
-                            <span class="text-sm font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($commission->amount, 2) }}</span>
+                            <span class="text-sm font-black text-emerald-600 italic tracking-tighter">USD {{ number_format($commission->amount, 2, ',', '.') }}</span>
                         </td>
                         <td class="px-8 py-6 text-center">
                              <span class="text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-widest {{ $commission->status === 'paid' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-600' }}">
