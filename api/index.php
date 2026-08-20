@@ -13,13 +13,7 @@ if (isset($_GET['__envcheck'])) {
     echo "=== PHP " . PHP_VERSION . " ===\n\n";
 
     foreach ($keys as $key) {
-        printf(
-            "%-16s getenv=%-28s SERVER=%-28s ENV=%s\n",
-            $key,
-            var_export(getenv($key), true),
-            var_export($_SERVER[$key] ?? '<ausente>', true),
-            var_export($_ENV[$key] ?? '<ausente>', true)
-        );
+        printf("%-16s %s\n", $key, var_export(getenv($key), true));
     }
 
     // Los secretos solo se reportan como presente/ausente, nunca su valor.
@@ -28,20 +22,29 @@ if (isset($_GET['__envcheck'])) {
         printf("%-16s %s\n", $secret, $value ? 'PRESENTE (' . strlen($value) . ' chars)' : 'AUSENTE o VACIO');
     }
 
-    echo "\n=== VARIABLES VACIAS (hay que corregirlas) ===\n";
+    echo "\n=== VARIABLES VACIAS ===\n";
     foreach (array_keys($_ENV) as $name) {
         if ($_ENV[$name] === '') {
             echo "  $name\n";
         }
     }
 
-    echo "\n=== total de vars en \$_SERVER: " . count($_SERVER) . " ===\n";
-    echo "=== existe .env en el bundle: " . (file_exists(__DIR__ . '/../.env') ? 'SI' : 'NO') . " ===\n";
-    echo "=== existe /tmp/config.php: " . (file_exists('/tmp/config.php') ? 'SI' : 'NO') . " ===\n";
-    echo "=== extensiones: pdo_pgsql=" . (extension_loaded('pdo_pgsql') ? 'si' : 'NO')
-        . " soap=" . (extension_loaded('soap') ? 'si' : 'NO') . " ===\n";
-
     exit;
+}
+
+// Vercel importa el .env.example completo cuando se cargan variables en bloque,
+// y deja en cadena vacia todas las claves que la plantilla trae sin valor. Para
+// Laravel una cadena vacia NO es lo mismo que ausente: env('DB_CONNECTION')
+// devuelve '' en vez del default, y la app revienta al arrancar. Las eliminamos
+// aca, antes de que el framework lea el entorno, para que apliquen los defaults
+// declarados en config/*.php.
+foreach (array_keys($_ENV) as $name) {
+    if ($_ENV[$name] !== '') {
+        continue;
+    }
+
+    unset($_ENV[$name], $_SERVER[$name]);
+    putenv($name);
 }
 
 // Entrypoint para Vercel (Fase 22, despliegue): el runtime vercel-community/php
