@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,65 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('dashboard', compact('metrics', 'recent_sales', 'recent_orders'));
+        // Fase "pro" del dashboard: alerta de stock bajo visible sin esperar
+        // a la notificacion (Fase 20 solo avisa en el momento en que cruza el
+        // umbral; esto muestra el estado actual completo). Mismo criterio que
+        // el filtro low_stock de StockController@index.
+        $lowStockProducts = Product::with('stock')
+            ->where(function ($q) {
+                $q->whereHas('stock', fn ($s) => $s->whereColumn('quantity', '<=', 'products.min_stock'))
+                    ->orWhereDoesntHave('stock');
+            })
+            ->where('min_stock', '>', 0)
+            ->get()
+            ->map(fn (Product $p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'current_stock' => $p->stock->quantity ?? 0,
+                'min_stock' => $p->min_stock,
+            ])
+            // mas critico primero: el que esta mas lejos por debajo de su minimo
+            ->sortBy(fn ($p) => $p['current_stock'] - $p['min_stock'])
+            ->take(6)
+            ->values();
+
+        // Productos mas vendidos del mes (unidades), para ver de un vistazo
+        // que esta funcionando sin entrar a Reportes.
+        $topProducts = DB::table('sale_items')
+            ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
+            ->join('products', 'products.id', '=', 'sale_items.product_id')
+            ->where('sales.organization_id', $orgId)
+            ->whereMonth('sales.sold_at', now()->month)
+            ->whereYear('sales.sold_at', now()->year)
+            ->select(
+                'products.id',
+                'products.name',
+                DB::raw('SUM(sale_items.quantity) as units_sold'),
+                DB::raw('SUM(sale_items.line_total) as revenue')
+            )
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('units_sold')
+            ->limit(5)
+            ->get();
+
+        // Mini-tendencia de ventas de los ultimos 7 dias, para el sparkline
+        // del dashboard.
+        $salesByDay = Sale::where('organization_id', $orgId)
+            ->where('sold_at', '>=', now()->subDays(6)->startOfDay())
+            ->selectRaw('DATE(sold_at) as day, SUM(total) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $salesTrend = collect(range(6, 0))->map(function (int $daysAgo) use ($salesByDay) {
+            $day = now()->subDays($daysAgo);
+            $key = $day->format('Y-m-d');
+
+            return [
+                'label' => $day->locale('es')->isoFormat('ddd'),
+                'total' => (float) ($salesByDay[$key] ?? 0),
+            ];
+        })->values();
+
+        return view('dashboard', compact('metrics', 'recent_sales', 'recent_orders', 'lowStockProducts', 'topProducts', 'salesTrend'));
     }
 }

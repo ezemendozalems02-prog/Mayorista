@@ -229,5 +229,116 @@
 
         </div>
 
+        <!-- Pro Widgets: Stock Bajo / Mas Vendidos / Tendencia -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+
+            <!-- Low Stock Alert -->
+            <div
+                class="bg-white dark:bg-dark-alt rounded-[40px] p-6 md:p-8 border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none relative group">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2
+                            class="text-xl font-black text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-3">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i> Stock Bajo
+                        </h2>
+                        <p class="text-xs text-gray-400 mt-1">Productos por debajo de su mínimo</p>
+                    </div>
+                    <a href="{{ route('stock.index', ['low_stock' => 1]) }}"
+                        class="p-2 bg-gray-50 dark:bg-dark hover:bg-red-500 hover:text-white transition-all rounded-2xl group border border-gray-100 dark:border-white/5">
+                        <i data-lucide="arrow-right-circle" class="w-5 h-5"></i>
+                    </a>
+                </div>
+
+                <div class="space-y-2 relative">
+                    @forelse($lowStockProducts as $p)
+                        @php $critical = $p['current_stock'] <= 0; @endphp
+                        <a href="{{ route('stock.movements', $p['id']) }}"
+                            class="flex justify-between items-center p-3 rounded-2xl bg-gray-50/50 dark:bg-dark/40 hover:bg-white dark:hover:bg-dark border border-transparent {{ $critical ? 'hover:border-red-500/20' : 'hover:border-amber-500/20' }} transition-all group">
+                            <p class="font-bold text-sm text-gray-900 dark:text-gray-100 truncate pr-3">{{ $p['name'] }}</p>
+                            <span
+                                class="shrink-0 text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest {{ $critical ? 'bg-red-500/10 text-red-500' : 'bg-amber-500/10 text-amber-600' }}">
+                                {{ $p['current_stock'] }} / {{ $p['min_stock'] }}
+                            </span>
+                        </a>
+                    @empty
+                        <div class="py-10 flex flex-col items-center justify-center text-gray-400 text-center opacity-60">
+                            <i data-lucide="check-circle-2" class="w-9 h-9 mb-2 text-emerald-500"></i>
+                            <p class="text-sm">Sin alertas de stock</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Top Selling Products -->
+            <div
+                class="bg-white dark:bg-dark-alt rounded-[40px] p-6 md:p-8 border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none relative group">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2
+                            class="text-xl font-black text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-3">
+                            <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i> Más Vendidos
+                        </h2>
+                        <p class="text-xs text-gray-400 mt-1">Ranking del mes por unidades</p>
+                    </div>
+                    @if(Auth::user()->hasRole([\App\Enums\UserRole::OWNER, \App\Enums\UserRole::MANAGER]))
+                    <a href="{{ route('report.index') }}"
+                        class="p-2 bg-gray-50 dark:bg-dark hover:bg-amber-500 hover:text-white transition-all rounded-2xl group border border-gray-100 dark:border-white/5">
+                        <i data-lucide="arrow-right-circle" class="w-5 h-5"></i>
+                    </a>
+                    @endif
+                </div>
+
+                <div class="space-y-2 relative">
+                    @forelse($topProducts as $i => $tp)
+                        <div
+                            class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50/50 dark:bg-dark/40 hover:bg-white dark:hover:bg-dark border border-transparent hover:border-amber-500/20 transition-all">
+                            <span
+                                class="shrink-0 w-7 h-7 rounded-xl flex items-center justify-center text-[11px] font-black {{ $i === 0 ? 'bg-amber-400 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-400' }}">
+                                {{ $i + 1 }}
+                            </span>
+                            <p class="flex-1 font-bold text-sm text-gray-900 dark:text-gray-100 truncate">{{ $tp->name }}</p>
+                            <span class="shrink-0 text-xs font-black text-gray-500 dark:text-gray-400">{{ (int) $tp->units_sold }}u</span>
+                        </div>
+                    @empty
+                        <div class="py-10 flex flex-col items-center justify-center text-gray-400 text-center opacity-60">
+                            <i data-lucide="package-search" class="w-9 h-9 mb-2"></i>
+                            <p class="text-sm">Todavía no hay ventas este mes</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- 7 Day Sales Trend -->
+            <div
+                class="bg-white dark:bg-dark-alt rounded-[40px] p-6 md:p-8 border border-gray-100 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none relative group">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2
+                            class="text-xl font-black text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-3">
+                            <i data-lucide="activity" class="w-5 h-5 text-primary"></i> Tendencia
+                        </h2>
+                        <p class="text-xs text-gray-400 mt-1">Ventas de los últimos 7 días</p>
+                    </div>
+                </div>
+
+                @php $maxTrend = max(1, $salesTrend->max('total')); @endphp
+                <div class="flex items-end justify-between gap-2 h-32 px-1">
+                    @foreach($salesTrend as $day)
+                        @php $heightPct = $day['total'] > 0 ? max(6, round(($day['total'] / $maxTrend) * 100)) : 2; @endphp
+                        <div class="flex-1 flex flex-col items-center gap-2 group/bar">
+                            <div class="w-full flex items-end h-24">
+                                <div style="height: {{ $heightPct }}%"
+                                    class="w-full rounded-t-lg {{ $day['total'] > 0 ? 'bg-gradient-to-t from-primary to-secondary' : 'bg-gray-100 dark:bg-white/5' }} transition-all group-hover/bar:opacity-80"
+                                    title="${{ number_format($day['total'], 2) }}">
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-bold uppercase text-gray-400">{{ $day['label'] }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+        </div>
+
     </div>
 @endsection
