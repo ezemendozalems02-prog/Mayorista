@@ -12,6 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Vercel termina el HTTPS en su borde y reenvia la peticion a la
+        // funcion Lambda como HTTP simple. Sin esto, Laravel no detecta que
+        // la conexion original era segura y genera URLs/redirects en http://,
+        // que el navegador bloquea al venir de una pagina https:// (login
+        // en loop). Solo hay un proxy posible (el borde de Vercel), asi que
+        // confiar en todos es seguro aca.
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             \App\Http\Middleware\CheckSubscription::class,
         ]);
