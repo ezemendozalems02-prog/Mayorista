@@ -8,12 +8,14 @@ use Tests\TestCase;
 class ExampleTest extends TestCase
 {
     /**
-     * A basic test example.
+     * La raíz del sitio redirige a /login (no hay landing pública): ver
+     * routes/web.php. Este test verificaba un 200 que ya no existe desde que
+     * se agregó ese redirect.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_the_root_redirects_to_login(): void
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertRedirect(route('login'));
     }
 }

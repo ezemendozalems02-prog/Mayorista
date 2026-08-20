@@ -2,184 +2,179 @@
 
 namespace Database\Seeders;
 
-use App\Enums\InventoryStatus;
-use App\Enums\RepairPriority;
-use App\Enums\RepairStatus;
+use App\Enums\AccountMovementType;
+use App\Enums\StockMovementType;
 use App\Enums\UserRole;
+use App\Models\Category;
 use App\Models\Client;
-use App\Models\InventoryItem;
 use App\Models\Organization;
-use App\Models\Repair;
-use App\Models\Sale;
-use App\Models\Technician;
+use App\Models\PriceList;
+use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\User;
+use App\Services\AccountService;
+use App\Services\CashService;
+use App\Services\OrderService;
+use App\Services\SaleService;
+use App\Services\StockService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
+    /**
+     * Datos de referencia para instalar un entorno de Mito Yamile desde cero
+     * (dev/staging/CI). No usar en la base de producción real -- esa ya tiene
+     * su propia organización, usuarios y catálogo cargados a mano.
+     */
     public function run(): void
     {
-        // 0. Seed Subscription Plans
         $this->call(SubscriptionPlanSeeder::class);
-        $proPlan = \App\Models\SubscriptionPlan::where('slug', 'pro')->first();
 
-        // 1. Create Demo Organization
+        if (Organization::count() > 0) {
+            $this->command?->warn('Ya existe una organización, se omite el seed de datos de referencia.');
+
+            return;
+        }
+
         $org = Organization::create([
-            'name' => 'Apple Demo Store',
-            'slug' => 'apple-demo-store',
-            'phone' => '+541122334455',
-            'email' => 'demo@applestore.com',
+            'name' => 'Mito Yamile',
+            'slug' => 'mito-yamile',
             'country' => 'Argentina',
-            'currency' => 'USD',
-            'subscription_plan_id' => $proPlan->id,
-            'subscription_status' => 'active',
-            'plan' => 'pro', // Mantener por compatibilidad legacy
+            'currency' => 'ARS',
+            'is_active' => true,
         ]);
 
-        // 2. Create Users
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('password'),
-            'role' => UserRole::SUPER_ADMIN,
-        ]);
+        $password = 'Mito2026!';
 
-        User::create([
+        $owner = User::create([
             'organization_id' => $org->id,
-            'name' => 'John Owner',
-            'email' => 'owner@demo.com',
-            'password' => Hash::make('password'),
+            'name' => 'Dueño Mito',
+            'email' => 'dueno@mitoyamile.com',
+            'password' => Hash::make($password),
             'role' => UserRole::OWNER,
+            'is_active' => true,
         ]);
-
-        User::create([
+        $manager = User::create([
             'organization_id' => $org->id,
-            'name' => 'Jane Seller',
-            'email' => 'seller@demo.com',
-            'password' => Hash::make('password'),
+            'name' => 'Encargado Mito',
+            'email' => 'encargado@mitoyamile.com',
+            'password' => Hash::make($password),
+            'role' => UserRole::MANAGER,
+            'is_active' => true,
+        ]);
+        $seller = User::create([
+            'organization_id' => $org->id,
+            'name' => 'Vendedor Mito',
+            'email' => 'vendedor@mitoyamile.com',
+            'password' => Hash::make($password),
             'role' => UserRole::SELLER,
-        ]);
-
-        User::create([
-            'organization_id' => $org->id,
-            'name' => 'Jack Tech',
-            'email' => 'tech@demo.com',
-            'password' => Hash::make('password'),
-            'role' => UserRole::TECHNICIAN,
-        ]);
-
-        // 3. Create Clients
-        $client1 = Client::create([
-            'organization_id' => $org->id,
-            'full_name' => 'Enzo Amarilla',
-            'phone' => '123456789',
-            'email' => 'enzo@example.com',
-            'document_number' => '12345678',
-        ]);
-
-        $client2 = Client::create([
-            'organization_id' => $org->id,
-            'full_name' => 'Maria Perez',
-            'phone' => '987654321',
-            'email' => 'maria@example.com',
-        ]);
-
-        // 4. Create Inventory (Available)
-        foreach (['iPhone 15 Pro Max', 'iPhone 15', 'iPhone 14 Pro', 'iPhone 13', 'Apple Watch Ultra 2'] as $model) {
-            InventoryItem::create([
-                'organization_id' => $org->id,
-                'category' => 'iphone',
-                'brand' => 'Apple',
-                'model' => $model,
-                'storage' => '256GB',
-                'color' => 'Varios',
-                'imei' => mt_rand(111111111111111, 999999999999999),
-                'battery_health' => mt_rand(88, 100),
-                'purchase_price' => mt_rand(500, 1000),
-                'sale_price' => mt_rand(1100, 1600),
-                'currency' => 'USD',
-                'status' => InventoryStatus::IN_STOCK,
-                'stock_type' => 'available',
-            ]);
-        }
-
-        // 5. Create Sold Items & Sales (for Dashboard stats)
-        for ($i = 1; $i <= 10; $i++) {
-            $cost = mt_rand(400, 800);
-            $price = $cost + mt_rand(150, 400);
-
-            $sale = Sale::create([
-                'organization_id' => $org->id,
-                'client_id' => $client1->id,
-                'seller_id' => 3, // John Owner
-                'sale_number' => 'S-' . strtoupper(Str::random(8)),
-                'status' => 'completed',
-                'currency' => 'USD',
-                'subtotal' => $price,
-                'total' => $price,
-                'cost_total' => $cost,
-                'profit_total' => $price - $cost,
-                'sold_at' => now()->subDays(mt_rand(0, 30)),
-            ]);
-
-            $invItem = InventoryItem::create([
-                'organization_id' => $org->id,
-                'category' => 'iphone',
-                'brand' => 'Apple',
-                'model' => 'iPhone Usado ' . $i,
-                'imei' => 'SOLD' . mt_rand(1000, 9999),
-                'status' => InventoryStatus::SOLD,
-                'purchase_price' => $cost,
-                'sale_price' => $price,
-                'currency' => 'USD',
-                'stock_type' => 'available',
-            ]);
-
-            \App\Models\SaleItem::create([
-                'sale_id' => $sale->id,
-                'inventory_item_id' => $invItem->id,
-                'item_name' => $invItem->model,
-                'unit_cost' => $cost,
-                'unit_price' => $price,
-                'quantity' => 1,
-                'line_total' => $price,
-            ]);
-        }
-
-        // 6. Technicians
-        $tech1 = Technician::create([
-            'organization_id' => $org->id,
-            'full_name' => 'Marcos Servicio',
-            'phone' => '11334455',
-            'specialties' => 'Microelectrónica, Cambios de Pantalla',
             'is_active' => true,
         ]);
 
-        $tech2 = Technician::create([
-            'organization_id' => $org->id,
-            'full_name' => 'Elena Apple',
-            'phone' => '11998877',
-            'specialties' => 'Software, iCloud, Desbloqueos',
-            'is_active' => true,
+        // Necesario para que HasOrganization complete organization_id solo en
+        // los modelos creados a partir de aca.
+        Auth::login($owner);
+
+        // Categorías reales del rubro (bazar/mayorista), no las de un módulo
+        // de otro rubro.
+        $categoryNames = [
+            'Novedades', 'Artículos de temporada', 'Bazar', 'Ferretería',
+            'Indumentaria', 'Inflables', 'Juguetería', 'Librería',
+            'Mochilas', 'Regalería', 'Tecnología', 'Varios',
+        ];
+
+        $categories = collect($categoryNames)->mapWithKeys(function (string $name) {
+            $category = Category::create([
+                'name' => $name,
+                'slug' => Str::slug($name),
+                'is_active' => true,
+            ]);
+
+            return [$name => $category];
+        });
+
+        $supplier = Supplier::create([
+            'business_name' => 'Distribuidora Central S.R.L.',
+            'cuit' => '30-71234567-8',
+            'phone' => '11-4000-0000',
         ]);
 
-        // 7. Repairs
-        foreach (RepairStatus::cases() as $status) {
-            Repair::create([
-                'organization_id' => $org->id,
-                'client_id' => mt_rand(1, 2) == 1 ? $client1->id : $client2->id,
-                'technician_id' => mt_rand(1, 2) == 1 ? $tech1->id : $tech2->id,
-                'repair_number' => 'REP-' . strtoupper(Str::random(5)),
-                'device_brand' => 'Apple',
-                'device_model' => 'iPhone 12',
-                'status' => $status,
-                'priority' => RepairPriority::MEDIUM,
-                'reported_issue' => 'Diagnóstico general',
-                'estimated_cost' => 150,
-                'received_at' => now()->subDays(mt_rand(1, 10)),
+        $stockService = app(StockService::class);
+
+        $products = [
+            ['name' => 'Muñeca articulada 30cm', 'category' => 'Juguetería', 'cost' => 4000, 'retail_price' => 8500, 'wholesale_price' => 6200, 'min_stock' => 5, 'stock' => 18],
+            ['name' => 'Pelota de fútbol N°5', 'category' => 'Juguetería', 'cost' => 2000, 'retail_price' => 4200, 'wholesale_price' => 3100, 'min_stock' => 8, 'stock' => 3],
+            ['name' => 'Cuaderno tapa dura A4 100 hojas', 'category' => 'Librería', 'cost' => 700, 'retail_price' => 1800, 'wholesale_price' => 1200, 'min_stock' => 20, 'stock' => 60],
+            ['name' => 'Cartuchera doble', 'category' => 'Librería', 'cost' => 1500, 'retail_price' => 3500, 'wholesale_price' => 2400, 'min_stock' => 10, 'stock' => 25],
+            ['name' => 'Taza de cerámica personalizable', 'category' => 'Regalería', 'cost' => 1200, 'retail_price' => 3200, 'wholesale_price' => 2100, 'min_stock' => 6, 'stock' => 14],
+            ['name' => 'Vela aromática grande', 'category' => 'Regalería', 'cost' => 1000, 'retail_price' => 2800, 'wholesale_price' => 1900, 'min_stock' => 6, 'stock' => 20],
+            ['name' => 'Pelota inflable de playa', 'category' => 'Inflables', 'cost' => 900, 'retail_price' => 2200, 'wholesale_price' => 1500, 'min_stock' => 10, 'stock' => 30],
+            ['name' => 'Mochila escolar reforzada', 'category' => 'Mochilas', 'cost' => 5500, 'retail_price' => 12000, 'wholesale_price' => 8800, 'min_stock' => 5, 'stock' => 12],
+            ['name' => 'Set de destornilladores x6', 'category' => 'Ferretería', 'cost' => 1800, 'retail_price' => 4500, 'wholesale_price' => 3200, 'min_stock' => 6, 'stock' => 15],
+            ['name' => 'Cargador USB-C 20W', 'category' => 'Tecnología', 'cost' => 2500, 'retail_price' => 6000, 'wholesale_price' => 4300, 'min_stock' => 8, 'stock' => 22],
+        ];
+
+        $createdProducts = [];
+        foreach ($products as $p) {
+            $product = Product::create([
+                'category_id' => $categories[$p['category']]->id,
+                'name' => $p['name'],
+                'cost' => $p['cost'],
+                'retail_price' => $p['retail_price'],
+                'wholesale_price' => $p['wholesale_price'],
+                'min_stock' => $p['min_stock'],
             ]);
+            $stockService->recordMovement($product, $p['stock'], StockMovementType::INITIAL, notes: 'Carga inicial de referencia');
+            $product->suppliers()->attach($supplier->id, ['cost' => $p['cost'], 'is_primary' => true]);
+            $createdProducts[] = $product;
         }
+
+        $priceList = PriceList::create([
+            'name' => 'Lista Mayorista',
+            'description' => 'Precios para clientes mayoristas frecuentes',
+            'is_active' => true,
+        ]);
+        $priceList->items()->create(['product_id' => $createdProducts[0]->id, 'price' => 5900]);
+
+        $clientMayorista = Client::create([
+            'full_name' => 'Kiosco La Esquina',
+            'business_name' => 'Kiosco La Esquina',
+            'client_type' => 'wholesale',
+            'phone' => '11-5555-1111',
+            'price_list_id' => $priceList->id,
+            'credit_limit' => 100000,
+        ]);
+        $clientMinorista = Client::create([
+            'full_name' => 'Rosa Gómez',
+            'client_type' => 'retail',
+            'phone' => '11-5555-2222',
+        ]);
+
+        $saleService = app(SaleService::class);
+        $saleService->createSale(
+            ['client_id' => $clientMayorista->id, 'payment_method' => 'cash'],
+            [
+                ['product_id' => $createdProducts[0]->id, 'quantity' => 2],
+                ['product_id' => $createdProducts[3]->id, 'quantity' => 5],
+            ],
+            $seller,
+        );
+
+        $accountService = app(AccountService::class);
+        $accountService->recordMovement($clientMinorista, 1800, AccountMovementType::SALE, notes: 'Compra a cuenta - referencia');
+
+        $orderService = app(OrderService::class);
+        $orderService->create($clientMayorista, [['product_id' => $createdProducts[2]->id, 'quantity' => 30]], $manager, 'Pedido para reponer kiosco');
+
+        $cashService = app(CashService::class);
+        $cashService->openSession($org->id, $owner, 5000, 'Apertura de caja de referencia');
+
+        Auth::logout();
+
+        $this->command?->info("Organización '{$org->name}' creada con {$categories->count()} categorías y ".count($createdProducts).' productos de referencia.');
+        $this->command?->info("Usuarios (contraseña '{$password}'): dueno@mitoyamile.com, encargado@mitoyamile.com, vendedor@mitoyamile.com");
     }
 }
