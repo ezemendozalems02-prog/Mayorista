@@ -33,25 +33,6 @@ Route::get('/', function () {
 // Demo Mode
 Route::get('/demo', [\App\Http\Controllers\DemoController::class, 'start'])->name('demo.start');
 
-// TEMPORAL - diagnóstico de despliegue en Vercel. Borrar cuando el deploy funcione.
-Route::get('/debug-env', function () {
-    return response()->json([
-        'APP_TIMEZONE_env' => env('APP_TIMEZONE'),
-        'APP_TIMEZONE_getenv' => getenv('APP_TIMEZONE'),
-        'APP_TIMEZONE_SERVER' => $_SERVER['APP_TIMEZONE'] ?? null,
-        'config_app_timezone' => config('app.timezone'),
-        'APP_ENV' => env('APP_ENV'),
-        'APP_DEBUG' => env('APP_DEBUG'),
-        'APP_KEY_set' => env('APP_KEY') ? true : false,
-        'DB_CONNECTION' => env('DB_CONNECTION'),
-        'DB_HOST_set' => env('DB_HOST') ? true : false,
-        'DB_USERNAME_set' => env('DB_USERNAME') ? true : false,
-        'DB_PASSWORD_set' => env('DB_PASSWORD') ? true : false,
-        'PLATFORM_MODE' => env('PLATFORM_MODE'),
-        'php_version' => PHP_VERSION,
-    ]);
-});
-
 
 // Autenticación
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
