@@ -32,7 +32,11 @@ return [
     |
     */
 
-    'lifetime' => (int) env('SESSION_LIFETIME', 120),
+    // Default subido de 120 minutos a 30 dias: el pedido es que la sesion
+    // solo se cierre cuando alguien toca "Cerrar sesion", no por inactividad
+    // (lo que generaba el error 419 Page Expired si una pestana con el login
+    // quedaba abierta mas de 2 horas antes de enviar el formulario).
+    'lifetime' => (int) env('SESSION_LIFETIME', 60 * 24 * 30),
 
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 
