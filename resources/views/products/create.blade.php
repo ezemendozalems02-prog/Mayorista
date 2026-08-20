@@ -55,11 +55,18 @@
                         @error('brand_id') <p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Código de Barras</label>
-                        <input type="text" name="barcode" value="{{ old('barcode') }}"
-                            class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
-                            placeholder="Escaneá o ingresá manualmente">
+                    <div class="space-y-2" x-data="barcodeScanner()" @mito:barcode-scanned.window="if ($event.detail?.code) $refs.barcodeInput.value = $event.detail.code">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Código de Barras</label>
+                            <button type="button" @click="toggleCamera()" class="text-xs text-primary font-bold hover:underline flex items-center gap-1">
+                                <i data-lucide="camera" class="w-3.5 h-3.5"></i> Escanear con cámara
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <input type="text" name="barcode" x-ref="barcodeInput" value="{{ old('barcode') }}"
+                                class="w-full px-6 py-4 rounded-2xl bg-gray-100 dark:bg-dark border border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-dark-alt outline-none transition-all duration-300 font-bold"
+                                placeholder="Escaneá o ingresá manualmente">
+                        </div>
                         @error('barcode') <p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p> @enderror
                     </div>
 

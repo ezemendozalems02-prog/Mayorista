@@ -9,6 +9,8 @@ export const metadata = {
   description: "Sistema de gestión mayorista — Juguetería, Librería y Regalería",
 }
 
+import { OnboardingProvider } from "@/components/onboarding/onboarding-context"
+
 export default function RootLayout({
   children,
 }: {
@@ -18,7 +20,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <OnboardingProvider>
+            {children}
+          </OnboardingProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -61,7 +61,6 @@
                 // Menú para usuarios de negocios
                 $businessMenu = [
                     ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'dashboard', 'feature' => null, 'roles' => ['owner', 'manager', 'technician', 'seller']],
-                    ['label' => 'Inventario', 'icon' => 'package', 'route' => 'inventory.index', 'feature' => 'inventory_basic', 'roles' => ['owner', 'manager', 'technician', 'seller']],
                     ['label' => 'Productos', 'icon' => 'box', 'route' => 'product.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Stock', 'icon' => 'boxes', 'route' => 'stock.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Inventario Físico', 'icon' => 'clipboard-list', 'route' => 'physical-count.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
@@ -70,13 +69,10 @@
                     ['label' => 'Categorías', 'icon' => 'folder-tree', 'route' => 'category.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
                     ['label' => 'Marcas', 'icon' => 'tag', 'route' => 'brand.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
                     ['label' => 'Proveedores', 'icon' => 'truck', 'route' => 'supplier.index', 'feature' => 'catalog', 'roles' => ['owner', 'manager']],
-                    ['label' => 'Reparaciones', 'icon' => 'wrench', 'route' => 'repair.index', 'feature' => 'repairs', 'roles' => ['owner', 'manager', 'technician']],
                     ['label' => 'Ventas', 'icon' => 'shopping-cart', 'route' => 'sale.index', 'feature' => 'sales', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Pedidos', 'icon' => 'clipboard-list', 'route' => 'order.index', 'feature' => 'sales', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Caja', 'icon' => 'landmark', 'route' => 'cash-session.index', 'feature' => 'sales', 'roles' => ['owner', 'manager', 'seller']],
                     ['label' => 'Clientes', 'icon' => 'users', 'route' => 'client.index', 'feature' => 'clients', 'roles' => ['owner', 'manager', 'seller', 'technician']],
-                    ['label' => 'Canjes', 'icon' => 'refresh-cw', 'route' => 'trade-in.index', 'feature' => 'trade_ins', 'roles' => ['owner', 'manager', 'seller']],
-                    ['label' => 'Staff', 'icon' => 'user-check', 'route' => 'technician.index', 'feature' => 'technicians', 'roles' => ['owner', 'manager']],
                     ['label' => 'Sucursales', 'icon' => 'map-pin', 'route' => 'branch.index', 'feature' => 'multi_branch', 'roles' => ['owner', 'manager']],
                     ['label' => 'Reportes', 'icon' => 'bar-chart-3', 'route' => 'report.index', 'feature' => 'reports_basic', 'roles' => ['owner', 'manager']],
                 ];

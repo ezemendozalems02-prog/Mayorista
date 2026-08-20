@@ -41,7 +41,39 @@
             </div>
         </div>
 
-        <div class="flex items-center h-8 w-px bg-gray-100 dark:bg-white/5 mx-2"></div>
+        <!-- Barcode Scanner Trigger for Mobile & Desktop -->
+        <div x-data="barcodeScanner()">
+            <button type="button" @click="toggleCamera()"
+                class="flex items-center gap-1.5 px-3 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-xs transition-all shadow-sm"
+                title="Escanear Código de Barras con Cámara">
+                <i data-lucide="camera" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Escanear</span>
+            </button>
+
+            <!-- Camera Modal -->
+            <div x-show="cameraOpen" x-cloak @click.self="closeCamera()"
+                class="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4">
+                <div class="bg-white dark:bg-dark-alt rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-black text-sm uppercase tracking-wider text-gray-900 dark:text-white flex items-center gap-2">
+                            <i data-lucide="scan-barcode" class="w-5 h-5 text-primary"></i>
+                            Escanear con Cámara
+                        </h4>
+                        <button type="button" @click="closeCamera()" class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <video x-ref="video" class="w-full rounded-2xl bg-black aspect-video object-cover border border-white/10" autoplay muted playsinline></video>
+                    <p class="text-xs text-gray-400 text-center font-semibold">Apuntá la cámara al código de barras del producto</p>
+                    <button type="button" @click="closeCamera()"
+                        class="w-full py-3 rounded-2xl bg-gray-100 dark:bg-dark text-gray-500 font-bold uppercase text-xs tracking-wider">
+                        Cerrar Cámara
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center h-8 w-px bg-gray-100 dark:bg-white/5 mx-1"></div>
 
         <!-- Theme Toggle -->
         <button @click="isDarkMode = !isDarkMode"
