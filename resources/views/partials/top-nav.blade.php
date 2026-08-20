@@ -29,7 +29,7 @@
     </div>
 
     <!-- Right Actions -->
-    <div class="flex items-center space-x-2 md:space-x-4">
+    <div class="flex items-center space-x-1 sm:space-x-2 md:space-x-4">
 
         <!-- Global Search Trigger -->
         <div @click="$dispatch('open-search')"
@@ -214,10 +214,10 @@
         <!-- User Dropdown (Optional if Sidebar Profile is enough) -->
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open"
-                class="flex items-center gap-2 p-1 pl-3 bg-white dark:bg-dark border border-gray-100 dark:border-white/5 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95">
+                class="flex items-center gap-2 p-1 pl-1 sm:pl-3 bg-white dark:bg-dark border border-gray-100 dark:border-white/5 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95">
                 <span
-                    class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ Auth::user()->organization?->name ?? 'Admin SaaS' }}</span>
-                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400 transition-transform"
+                    class="hidden sm:inline text-xs font-bold text-gray-700 dark:text-gray-300 max-w-[140px] truncate">{{ Auth::user()->organization?->name ?? 'Admin SaaS' }}</span>
+                <i data-lucide="chevron-down" class="hidden sm:block w-3.5 h-3.5 text-gray-400 transition-transform"
                     :class="{ 'rotate-180': open }"></i>
                 <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->organization?->name ?? 'A') }}&background=E5E7EB&color=6B7280"
                     class="w-6 h-6 rounded-full" />

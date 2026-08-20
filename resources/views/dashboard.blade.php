@@ -14,14 +14,14 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Aquí tenés el resumen de tu negocio para
                     hoy, {{ now()->format('j') }} de {{ ucfirst(now()->locale('es')->monthName) }}.</p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <a href="{{ route('sale.create') }}"
-                    class="btn-violet px-5 py-2.5 rounded-2xl shadow-lg text-sm font-bold flex items-center gap-2 transition-all active:scale-95 group">
+                    class="btn-violet px-5 py-2.5 rounded-2xl shadow-lg text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 group">
                     <i data-lucide="plus-circle" class="w-4 h-4 group-hover:rotate-90 transition-transform"></i>
                     Registrar Venta
                 </a>
                 <a href="{{ route('order.create') }}"
-                    class="bg-dark hover:bg-dark-alt dark:bg-dark-alt dark:hover:bg-dark text-white px-5 py-2.5 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-2 transition-all active:scale-95 group">
+                    class="bg-dark hover:bg-dark-alt dark:bg-dark-alt dark:hover:bg-dark text-white px-5 py-2.5 rounded-2xl shadow-xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 group">
                     <i data-lucide="clipboard-list" class="w-4 h-4 group-hover:-rotate-6 transition-transform"></i>
                     Nuevo Pedido
                 </a>
